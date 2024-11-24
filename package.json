@@ -1,0 +1,38 @@
+{
+    "name": "vite-plugin-iconify",
+    "version": "1.0.0",
+    "description": "A Vite plugin for dynamically inlining Iconify icons in Vue and React components.",
+    "main": "index.js",
+    "module": "index.js",
+    "type": "module",
+    "scripts": {
+        "build": "esbuild src/index.js --bundle --format=esm --target=esnext --outdir=dist",
+        "prepare": "npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/vite-plugin-iconify.git"
+    },
+    "keywords": [
+        "vite",
+        "plugin",
+        "iconify",
+        "icons",
+        "vue",
+        "react"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/yourusername/vite-plugin-iconify/issues"
+    },
+    "homepage": "https://github.com/yourusername/vite-plugin-iconify#readme",
+    "dependencies": {
+        "axios": "^0.21.1"
+    },
+    "devDependencies": {
+        "vite": "^4.0.0",
+        "esbuild": "^0.15.0",
+        "@rollup/pluginutils": "^4.1.0"
+    }
+}
