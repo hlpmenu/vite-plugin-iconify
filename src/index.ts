@@ -1,13 +1,15 @@
 import { createFilter } from '@rollup/pluginutils';
-import { parseAttributes, buildSvgUrl, fetchSvg } from './utils.js';
-import transformReact from './transform_react.js';
-const pluginname = '[vite-plugin-iconify] ';
+import type { Plugin } from 'vite';
+import { parseAttributes, buildSvgUrl, fetchSvg } from './utils';
+import transformReact from './transform_react';
+
+const pluginName = '[vite-plugin-iconify] ';
 
 /**
  * A Vite plugin for dynamically inlining Iconify icons in Vue SFCs.
  * @returns {import('vite').Plugin} The Vite plugin instance.
  */
-function IconifySfcPlugin() {
+export default function IconifySfcPlugin(): Plugin {
   const filter = createFilter(['**/*.vue']);
   const reactFilter = createFilter(['**/*.jsx', '**/*.tsx']);
 
@@ -21,10 +23,10 @@ function IconifySfcPlugin() {
      * @param {string} id - The identifier of the module.
      * @returns {Promise<string|void>} The transformed code or void if no transformation is needed.
      */
-    async transform(code, id) {
+    async transform(code: string, id: string): Promise<string | void> {
       if (!reactFilter(id)) {
         return transformReact(code, id);
-     }
+      }
       if (!filter(id)) return;
 
       const iconRegex = /<Icon\s+([^>]*?)\/>/g;
@@ -38,13 +40,13 @@ function IconifySfcPlugin() {
         const attributes = parseAttributes(match[1]);
 
         if (!attributes.icon) {
-          console.warn(`${pluginname}Missing 'icon' attribute in <Icon />.`);
+          console.warn(`${pluginName}Missing 'icon' attribute in <Icon />.`);
           continue;
         }
 
         const [prefix, name] = attributes.icon.split(':');
         if (!prefix || !name) {
-          console.warn(`${pluginname}Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
+          console.warn(`${pluginName}Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
           continue;
         }
 
@@ -52,20 +54,16 @@ function IconifySfcPlugin() {
         const svgContent = await fetchSvg(svgUrl);
 
         if (!svgContent) {
-          console.warn(`${pluginname}Failed to fetch SVG for "${attributes.icon}".`);
+          console.warn(`${pluginName}Failed to fetch SVG for "${attributes.icon}".`);
           continue;
         }
 
         // Insert original attributes (except the icon-specific ones) into the <svg> tag
         const filteredAttributes = Object.entries(attributes)
-          .filter(([key]) => ![
-            'icon',
-            'width',
-            'height',
-            'color',
-            'flip',
-          ].includes(key))
-          .map(([key, value]) => `${key}="${value}"`)
+          .filter(([key]) =>
+            !['icon', 'width', 'height', 'color', 'flip'].includes(key),
+          )
+          .map(([key, value]) => `${key}="${value ?? ''}"`)
           .join(' ');
 
         const svg = svgContent.replace('<svg', `<svg ${filteredAttributes}`);
@@ -76,6 +74,3 @@ function IconifySfcPlugin() {
     },
   };
 }
-
-
-export default IconifySfcPlugin;

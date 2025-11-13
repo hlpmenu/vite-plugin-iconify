@@ -1,12 +1,13 @@
-import { buildSvgUrl, fetchSvg } from './utils.js';
+import { buildSvgUrl, fetchSvg, type IconAttributes } from './utils';
+
+const pluginName = '[vite-plugin-iconify] ';
 
 /**
- * Transform function for processing React components and replacing <Icon> components with inline SVGs.
- * @param {string} code - The source code of the module.
- * @param {string} id - The identifier of the module.
- * @returns {Promise<string|void>} The transformed code or void if no transformation is needed.
+ * Transform React components by replacing <Icon /> components with inline SVGs.
+ * @param code Source code of the module.
+ * @param id Module identifier.
  */
-async function transformReact(code, id) {
+export default async function transformReact(code: string, id: string): Promise<string | void> {
   const iconRegex = /<Icon\s+([^>]*?)\/>/g;
   const matches = [...code.matchAll(iconRegex)];
   if (!matches.length) return;
@@ -18,13 +19,13 @@ async function transformReact(code, id) {
     const attributes = parseReactAttributes(match[1]);
 
     if (!attributes.icon) {
-      console.warn(`[vite-plugin-iconify] Missing 'icon' attribute in <Icon />.`);
+      console.warn(`${pluginName}Missing 'icon' attribute in <Icon />.`);
       continue;
     }
 
     const [prefix, name] = attributes.icon.split(':');
     if (!prefix || !name) {
-      console.warn(`[vite-plugin-iconify] Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
+      console.warn(`${pluginName}Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
       continue;
     }
 
@@ -32,11 +33,11 @@ async function transformReact(code, id) {
     const svgContent = await fetchSvg(svgUrl);
 
     if (!svgContent) {
-      console.warn(`[vite-plugin-iconify] Failed to fetch SVG for "${attributes.icon}".`);
+      console.warn(`${pluginName}Failed to fetch SVG for "${attributes.icon}".`);
       continue;
     }
 
-    // Insert original attributes (except the icon-specific ones) into the <svg> tag
+    // Preserve non-icon attributes on the resulting <svg> element.
     const filteredAttributes = Object.entries(attributes)
       .filter(([key]) => !['icon', 'width', 'height', 'color', 'flip'].includes(key))
       .map(([key, value]) => `${key}={${JSON.stringify(value)}}`)
@@ -51,17 +52,14 @@ async function transformReact(code, id) {
 
 /**
  * Parse attributes from the <Icon /> tag in React components.
- * @param {string} attributesString - The string containing the attributes.
- * @returns {object} An object representing the parsed attributes.
+ * @param attributesString Raw attributes string from the match.
  */
-function parseReactAttributes(attributesString) {
-  const attributes = {};
+function parseReactAttributes(attributesString: string): IconAttributes {
+  const attributes: IconAttributes = {};
   const regex = /(\w[\w-]*)={"([^}]*)"}/g;
-  let match;
-  while ((match = regex.exec(attributesString))) {
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(attributesString)) !== null) {
     attributes[match[1]] = match[2];
   }
   return attributes;
 }
-
-export default transformReact;

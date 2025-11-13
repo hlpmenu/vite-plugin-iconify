@@ -1,4 +1,7 @@
 tmp
 temp
 node_modules
-
+dist
+out
+examples/
+tests/

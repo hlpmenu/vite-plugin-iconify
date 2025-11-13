@@ -1,2 +1,1664 @@
-var Os=Object.create;var kt=Object.defineProperty;var Ts=Object.getOwnPropertyDescriptor;var Ls=Object.getOwnPropertyNames;var qs=Object.getPrototypeOf,Hs=Object.prototype.hasOwnProperty;var Y=(e=>typeof require<"u"?require:typeof Proxy<"u"?new Proxy(e,{get:(t,r)=>(typeof require<"u"?require:t)[r]}):e)(function(e){if(typeof require<"u")return require.apply(this,arguments);throw new Error('Dynamic require of "'+e+'" is not supported')});var b=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports);var Ns=(e,t,r,s)=>{if(t&&typeof t=="object"||typeof t=="function")for(let n of Ls(t))!Hs.call(e,n)&&n!==r&&kt(e,n,{get:()=>t[n],enumerable:!(s=Ts(t,n))||s.enumerable});return e};var Bt=(e,t,r)=>(r=e!=null?Os(qs(e)):{},Ns(t||!e||!e.__esModule?kt(r,"default",{value:e,enumerable:!0}):r,e));var he=b((Uo,Mt)=>{"use strict";var ks=Y("path"),se="\\\\/",It=`[^${se}]`,ne="\\.",Bs="\\+",Is="\\?",be="\\/",Us="(?=.)",Ut="[^/]",Ke=`(?:${be}|$)`,Pt=`(?:^|${be})`,Xe=`${ne}{1,2}${Ke}`,Ps=`(?!${ne})`,Ds=`(?!${Pt}${Xe})`,Ms=`(?!${ne}{0,1}${Ke})`,Fs=`(?!${Xe})`,js=`[^.${be}]`,Gs=`${Ut}*?`,Dt={DOT_LITERAL:ne,PLUS_LITERAL:Bs,QMARK_LITERAL:Is,SLASH_LITERAL:be,ONE_CHAR:Us,QMARK:Ut,END_ANCHOR:Ke,DOTS_SLASH:Xe,NO_DOT:Ps,NO_DOTS:Ds,NO_DOT_SLASH:Ms,NO_DOTS_SLASH:Fs,QMARK_NO_DOT:js,STAR:Gs,START_ANCHOR:Pt},Ks={...Dt,SLASH_LITERAL:`[${se}]`,QMARK:It,STAR:`${It}*?`,DOTS_SLASH:`${ne}{1,2}(?:[${se}]|$)`,NO_DOT:`(?!${ne})`,NO_DOTS:`(?!(?:^|[${se}])${ne}{1,2}(?:[${se}]|$))`,NO_DOT_SLASH:`(?!${ne}{0,1}(?:[${se}]|$))`,NO_DOTS_SLASH:`(?!${ne}{1,2}(?:[${se}]|$))`,QMARK_NO_DOT:`[^.${se}]`,START_ANCHOR:`(?:^|[${se}])`,END_ANCHOR:`(?:[${se}]|$)`},Xs={alnum:"a-zA-Z0-9",alpha:"a-zA-Z",ascii:"\\x00-\\x7F",blank:" \\t",cntrl:"\\x00-\\x1F\\x7F",digit:"0-9",graph:"\\x21-\\x7E",lower:"a-z",print:"\\x20-\\x7E ",punct:"\\-!\"#$%&'()\\*+,./:;<=>?@[\\]^_`{|}~",space:" \\t\\r\\n\\v\\f",upper:"A-Z",word:"A-Za-z0-9_",xdigit:"A-Fa-f0-9"};Mt.exports={MAX_LENGTH:1024*64,POSIX_REGEX_SOURCE:Xs,REGEX_BACKSLASH:/\\(?![*+?^${}(|)[\]])/g,REGEX_NON_SPECIAL_CHARS:/^[^@![\].,$*+?^{}()|\\/]+/,REGEX_SPECIAL_CHARS:/[-*+?.^${}(|)[\]]/,REGEX_SPECIAL_CHARS_BACKREF:/(\\?)((\W)(\3*))/g,REGEX_SPECIAL_CHARS_GLOBAL:/([-*+?.^${}(|)[\]])/g,REGEX_REMOVE_BACKSLASH:/(?:\[.*?[^\\]\]|\\(?=.))/g,REPLACEMENTS:{"***":"*","**/**":"**","**/**/**":"**"},CHAR_0:48,CHAR_9:57,CHAR_UPPERCASE_A:65,CHAR_LOWERCASE_A:97,CHAR_UPPERCASE_Z:90,CHAR_LOWERCASE_Z:122,CHAR_LEFT_PARENTHESES:40,CHAR_RIGHT_PARENTHESES:41,CHAR_ASTERISK:42,CHAR_AMPERSAND:38,CHAR_AT:64,CHAR_BACKWARD_SLASH:92,CHAR_CARRIAGE_RETURN:13,CHAR_CIRCUMFLEX_ACCENT:94,CHAR_COLON:58,CHAR_COMMA:44,CHAR_DOT:46,CHAR_DOUBLE_QUOTE:34,CHAR_EQUAL:61,CHAR_EXCLAMATION_MARK:33,CHAR_FORM_FEED:12,CHAR_FORWARD_SLASH:47,CHAR_GRAVE_ACCENT:96,CHAR_HASH:35,CHAR_HYPHEN_MINUS:45,CHAR_LEFT_ANGLE_BRACKET:60,CHAR_LEFT_CURLY_BRACE:123,CHAR_LEFT_SQUARE_BRACKET:91,CHAR_LINE_FEED:10,CHAR_NO_BREAK_SPACE:160,CHAR_PERCENT:37,CHAR_PLUS:43,CHAR_QUESTION_MARK:63,CHAR_RIGHT_ANGLE_BRACKET:62,CHAR_RIGHT_CURLY_BRACE:125,CHAR_RIGHT_SQUARE_BRACKET:93,CHAR_SEMICOLON:59,CHAR_SINGLE_QUOTE:39,CHAR_SPACE:32,CHAR_TAB:9,CHAR_UNDERSCORE:95,CHAR_VERTICAL_LINE:124,CHAR_ZERO_WIDTH_NOBREAK_SPACE:65279,SEP:ks.sep,extglobChars(e){return{"!":{type:"negate",open:"(?:(?!(?:",close:`))${e.STAR})`},"?":{type:"qmark",open:"(?:",close:")?"},"+":{type:"plus",open:"(?:",close:")+"},"*":{type:"star",open:"(?:",close:")*"},"@":{type:"at",open:"(?:",close:")"}}},globChars(e){return e===!0?Ks:Dt}}});var Se=b(J=>{"use strict";var zs=Y("path"),Ws=process.platform==="win32",{REGEX_BACKSLASH:Vs,REGEX_REMOVE_BACKSLASH:Js,REGEX_SPECIAL_CHARS:Qs,REGEX_SPECIAL_CHARS_GLOBAL:Ys}=he();J.isObject=e=>e!==null&&typeof e=="object"&&!Array.isArray(e);J.hasRegexChars=e=>Qs.test(e);J.isRegexChar=e=>e.length===1&&J.hasRegexChars(e);J.escapeRegex=e=>e.replace(Ys,"\\$1");J.toPosixSlashes=e=>e.replace(Vs,"/");J.removeBackslashes=e=>e.replace(Js,t=>t==="\\"?"":t);J.supportsLookbehinds=()=>{let e=process.version.slice(1).split(".").map(Number);return e.length===3&&e[0]>=9||e[0]===8&&e[1]>=10};J.isWindows=e=>e&&typeof e.windows=="boolean"?e.windows:Ws===!0||zs.sep==="\\";J.escapeLast=(e,t,r)=>{let s=e.lastIndexOf(t,r);return s===-1?e:e[s-1]==="\\"?J.escapeLast(e,t,s-1):`${e.slice(0,s)}\\${e.slice(s)}`};J.removePrefix=(e,t={})=>{let r=e;return r.startsWith("./")&&(r=r.slice(2),t.prefix="./"),r};J.wrapOutput=(e,t={},r={})=>{let s=r.contains?"":"^",n=r.contains?"":"$",u=`${s}(?:${e})${n}`;return t.negated===!0&&(u=`(?:^(?!${u}).*$)`),u}});var Vt=b((Do,Wt)=>{"use strict";var Ft=Se(),{CHAR_ASTERISK:ze,CHAR_AT:Zs,CHAR_BACKWARD_SLASH:de,CHAR_COMMA:en,CHAR_DOT:We,CHAR_EXCLAMATION_MARK:Ve,CHAR_FORWARD_SLASH:zt,CHAR_LEFT_CURLY_BRACE:Je,CHAR_LEFT_PARENTHESES:Qe,CHAR_LEFT_SQUARE_BRACKET:tn,CHAR_PLUS:rn,CHAR_QUESTION_MARK:jt,CHAR_RIGHT_CURLY_BRACE:sn,CHAR_RIGHT_PARENTHESES:Gt,CHAR_RIGHT_SQUARE_BRACKET:nn}=he(),Kt=e=>e===zt||e===de,Xt=e=>{e.isPrefix!==!0&&(e.depth=e.isGlobstar?1/0:1)},on=(e,t)=>{let r=t||{},s=e.length-1,n=r.parts===!0||r.scanToEnd===!0,u=[],a=[],f=[],o=e,d=-1,h=0,y=0,_=!1,m=!1,E=!1,A=!1,k=!1,W=!1,V=!1,L=!1,B=!1,O=!1,ee=0,P,g,w={value:"",depth:0,isGlob:!1},I=()=>d>=s,l=()=>o.charCodeAt(d+1),$=()=>(P=g,o.charCodeAt(++d));for(;d<s;){g=$();let q;if(g===de){V=w.backslashes=!0,g=$(),g===Je&&(W=!0);continue}if(W===!0||g===Je){for(ee++;I()!==!0&&(g=$());){if(g===de){V=w.backslashes=!0,$();continue}if(g===Je){ee++;continue}if(W!==!0&&g===We&&(g=$())===We){if(_=w.isBrace=!0,E=w.isGlob=!0,O=!0,n===!0)continue;break}if(W!==!0&&g===en){if(_=w.isBrace=!0,E=w.isGlob=!0,O=!0,n===!0)continue;break}if(g===sn&&(ee--,ee===0)){W=!1,_=w.isBrace=!0,O=!0;break}}if(n===!0)continue;break}if(g===zt){if(u.push(d),a.push(w),w={value:"",depth:0,isGlob:!1},O===!0)continue;if(P===We&&d===h+1){h+=2;continue}y=d+1;continue}if(r.noext!==!0&&(g===rn||g===Zs||g===ze||g===jt||g===Ve)===!0&&l()===Qe){if(E=w.isGlob=!0,A=w.isExtglob=!0,O=!0,g===Ve&&d===h&&(B=!0),n===!0){for(;I()!==!0&&(g=$());){if(g===de){V=w.backslashes=!0,g=$();continue}if(g===Gt){E=w.isGlob=!0,O=!0;break}}continue}break}if(g===ze){if(P===ze&&(k=w.isGlobstar=!0),E=w.isGlob=!0,O=!0,n===!0)continue;break}if(g===jt){if(E=w.isGlob=!0,O=!0,n===!0)continue;break}if(g===tn){for(;I()!==!0&&(q=$());){if(q===de){V=w.backslashes=!0,$();continue}if(q===nn){m=w.isBracket=!0,E=w.isGlob=!0,O=!0;break}}if(n===!0)continue;break}if(r.nonegate!==!0&&g===Ve&&d===h){L=w.negated=!0,h++;continue}if(r.noparen!==!0&&g===Qe){if(E=w.isGlob=!0,n===!0){for(;I()!==!0&&(g=$());){if(g===Qe){V=w.backslashes=!0,g=$();continue}if(g===Gt){O=!0;break}}continue}break}if(E===!0){if(O=!0,n===!0)continue;break}}r.noext===!0&&(A=!1,E=!1);let C=o,te="",i="";h>0&&(te=o.slice(0,h),o=o.slice(h),y-=h),C&&E===!0&&y>0?(C=o.slice(0,y),i=o.slice(y)):E===!0?(C="",i=o):C=o,C&&C!==""&&C!=="/"&&C!==o&&Kt(C.charCodeAt(C.length-1))&&(C=C.slice(0,-1)),r.unescape===!0&&(i&&(i=Ft.removeBackslashes(i)),C&&V===!0&&(C=Ft.removeBackslashes(C)));let c={prefix:te,input:e,start:h,base:C,glob:i,isBrace:_,isBracket:m,isGlob:E,isExtglob:A,isGlobstar:k,negated:L,negatedExtglob:B};if(r.tokens===!0&&(c.maxDepth=0,Kt(g)||a.push(w),c.tokens=a),r.parts===!0||r.tokens===!0){let q;for(let R=0;R<u.length;R++){let D=q?q+1:h,K=u[R],M=e.slice(D,K);r.tokens&&(R===0&&h!==0?(a[R].isPrefix=!0,a[R].value=te):a[R].value=M,Xt(a[R]),c.maxDepth+=a[R].depth),(R!==0||M!=="")&&f.push(M),q=K}if(q&&q+1<e.length){let R=e.slice(q+1);f.push(R),r.tokens&&(a[a.length-1].value=R,Xt(a[a.length-1]),c.maxDepth+=a[a.length-1].depth)}c.slashes=u,c.parts=f}return c};Wt.exports=on});var Yt=b((Mo,Qt)=>{"use strict";var we=he(),Z=Se(),{MAX_LENGTH:Ce,POSIX_REGEX_SOURCE:an,REGEX_NON_SPECIAL_CHARS:un,REGEX_SPECIAL_CHARS_BACKREF:cn,REPLACEMENTS:Jt}=we,ln=(e,t)=>{if(typeof t.expandRange=="function")return t.expandRange(...e,t);e.sort();let r=`[${e.join("-")}]`;try{new RegExp(r)}catch{return e.map(n=>Z.escapeRegex(n)).join("..")}return r},le=(e,t)=>`Missing ${e}: "${t}" - use "\\\\${t}" to match literal characters`,Ye=(e,t)=>{if(typeof e!="string")throw new TypeError("Expected a string");e=Jt[e]||e;let r={...t},s=typeof r.maxLength=="number"?Math.min(Ce,r.maxLength):Ce,n=e.length;if(n>s)throw new SyntaxError(`Input length: ${n}, exceeds maximum allowed length: ${s}`);let u={type:"bos",value:"",output:r.prepend||""},a=[u],f=r.capture?"":"?:",o=Z.isWindows(t),d=we.globChars(o),h=we.extglobChars(d),{DOT_LITERAL:y,PLUS_LITERAL:_,SLASH_LITERAL:m,ONE_CHAR:E,DOTS_SLASH:A,NO_DOT:k,NO_DOT_SLASH:W,NO_DOTS_SLASH:V,QMARK:L,QMARK_NO_DOT:B,STAR:O,START_ANCHOR:ee}=d,P=v=>`(${f}(?:(?!${ee}${v.dot?A:y}).)*?)`,g=r.dot?"":k,w=r.dot?L:B,I=r.bash===!0?P(r):O;r.capture&&(I=`(${I})`),typeof r.noext=="boolean"&&(r.noextglob=r.noext);let l={input:e,index:-1,start:0,dot:r.dot===!0,consumed:"",output:"",prefix:"",backtrack:!1,negated:!1,brackets:0,braces:0,parens:0,quotes:0,globstar:!1,tokens:a};e=Z.removePrefix(e,l),n=e.length;let $=[],C=[],te=[],i=u,c,q=()=>l.index===n-1,R=l.peek=(v=1)=>e[l.index+v],D=l.advance=()=>e[++l.index]||"",K=()=>e.slice(l.index+1),M=(v="",T=0)=>{l.consumed+=v,l.index+=T},oe=v=>{l.output+=v.output!=null?v.output:v.value,M(v.value)},Ee=()=>{let v=1;for(;R()==="!"&&(R(2)!=="("||R(3)==="?");)D(),l.start++,v++;return v%2===0?!1:(l.negated=!0,l.start++,!0)},ie=v=>{l[v]++,te.push(v)},F=v=>{l[v]--,te.pop()},S=v=>{if(i.type==="globstar"){let T=l.braces>0&&(v.type==="comma"||v.type==="brace"),p=v.extglob===!0||$.length&&(v.type==="pipe"||v.type==="paren");v.type!=="slash"&&v.type!=="paren"&&!T&&!p&&(l.output=l.output.slice(0,-i.output.length),i.type="star",i.value="*",i.output=I,l.output+=i.output)}if($.length&&v.type!=="paren"&&($[$.length-1].inner+=v.value),(v.value||v.output)&&oe(v),i&&i.type==="text"&&v.type==="text"){i.value+=v.value,i.output=(i.output||"")+v.value;return}v.prev=i,a.push(v),i=v},Ae=(v,T)=>{let p={...h[T],conditions:1,inner:""};p.prev=i,p.parens=l.parens,p.output=l.output;let x=(r.capture?"(":"")+p.open;ie("parens"),S({type:v,value:T,output:l.output?"":E}),S({type:"paren",extglob:!0,value:D(),output:x}),$.push(p)},$s=v=>{let T=v.close+(r.capture?")":""),p;if(v.type==="negate"){let x=I;if(v.inner&&v.inner.length>1&&v.inner.includes("/")&&(x=P(r)),(x!==I||q()||/^\)+$/.test(K()))&&(T=v.close=`)$))${x}`),v.inner.includes("*")&&(p=K())&&/^\.[^\\/.]+$/.test(p)){let H=Ye(p,{...t,fastpaths:!1}).output;T=v.close=`)${H})${x})`}v.prev.type==="bos"&&(l.negatedExtglob=!0)}S({type:"paren",extglob:!0,value:c,output:T}),F("parens")};if(r.fastpaths!==!1&&!/(^[*!]|[/()[\]{}"])/.test(e)){let v=!1,T=e.replace(cn,(p,x,H,X,U,Ge)=>X==="\\"?(v=!0,p):X==="?"?x?x+X+(U?L.repeat(U.length):""):Ge===0?w+(U?L.repeat(U.length):""):L.repeat(H.length):X==="."?y.repeat(H.length):X==="*"?x?x+X+(U?I:""):I:x?p:`\\${p}`);return v===!0&&(r.unescape===!0?T=T.replace(/\\/g,""):T=T.replace(/\\+/g,p=>p.length%2===0?"\\\\":p?"\\":"")),T===e&&r.contains===!0?(l.output=e,l):(l.output=Z.wrapOutput(T,l,t),l)}for(;!q();){if(c=D(),c==="\0")continue;if(c==="\\"){let p=R();if(p==="/"&&r.bash!==!0||p==="."||p===";")continue;if(!p){c+="\\",S({type:"text",value:c});continue}let x=/^\\+/.exec(K()),H=0;if(x&&x[0].length>2&&(H=x[0].length,l.index+=H,H%2!==0&&(c+="\\")),r.unescape===!0?c=D():c+=D(),l.brackets===0){S({type:"text",value:c});continue}}if(l.brackets>0&&(c!=="]"||i.value==="["||i.value==="[^")){if(r.posix!==!1&&c===":"){let p=i.value.slice(1);if(p.includes("[")&&(i.posix=!0,p.includes(":"))){let x=i.value.lastIndexOf("["),H=i.value.slice(0,x),X=i.value.slice(x+2),U=an[X];if(U){i.value=H+U,l.backtrack=!0,D(),!u.output&&a.indexOf(i)===1&&(u.output=E);continue}}}(c==="["&&R()!==":"||c==="-"&&R()==="]")&&(c=`\\${c}`),c==="]"&&(i.value==="["||i.value==="[^")&&(c=`\\${c}`),r.posix===!0&&c==="!"&&i.value==="["&&(c="^"),i.value+=c,oe({value:c});continue}if(l.quotes===1&&c!=='"'){c=Z.escapeRegex(c),i.value+=c,oe({value:c});continue}if(c==='"'){l.quotes=l.quotes===1?0:1,r.keepQuotes===!0&&S({type:"text",value:c});continue}if(c==="("){ie("parens"),S({type:"paren",value:c});continue}if(c===")"){if(l.parens===0&&r.strictBrackets===!0)throw new SyntaxError(le("opening","("));let p=$[$.length-1];if(p&&l.parens===p.parens+1){$s($.pop());continue}S({type:"paren",value:c,output:l.parens?")":"\\)"}),F("parens");continue}if(c==="["){if(r.nobracket===!0||!K().includes("]")){if(r.nobracket!==!0&&r.strictBrackets===!0)throw new SyntaxError(le("closing","]"));c=`\\${c}`}else ie("brackets");S({type:"bracket",value:c});continue}if(c==="]"){if(r.nobracket===!0||i&&i.type==="bracket"&&i.value.length===1){S({type:"text",value:c,output:`\\${c}`});continue}if(l.brackets===0){if(r.strictBrackets===!0)throw new SyntaxError(le("opening","["));S({type:"text",value:c,output:`\\${c}`});continue}F("brackets");let p=i.value.slice(1);if(i.posix!==!0&&p[0]==="^"&&!p.includes("/")&&(c=`/${c}`),i.value+=c,oe({value:c}),r.literalBrackets===!1||Z.hasRegexChars(p))continue;let x=Z.escapeRegex(i.value);if(l.output=l.output.slice(0,-i.value.length),r.literalBrackets===!0){l.output+=x,i.value=x;continue}i.value=`(${f}${x}|${i.value})`,l.output+=i.value;continue}if(c==="{"&&r.nobrace!==!0){ie("braces");let p={type:"brace",value:c,output:"(",outputIndex:l.output.length,tokensIndex:l.tokens.length};C.push(p),S(p);continue}if(c==="}"){let p=C[C.length-1];if(r.nobrace===!0||!p){S({type:"text",value:c,output:c});continue}let x=")";if(p.dots===!0){let H=a.slice(),X=[];for(let U=H.length-1;U>=0&&(a.pop(),H[U].type!=="brace");U--)H[U].type!=="dots"&&X.unshift(H[U].value);x=ln(X,r),l.backtrack=!0}if(p.comma!==!0&&p.dots!==!0){let H=l.output.slice(0,p.outputIndex),X=l.tokens.slice(p.tokensIndex);p.value=p.output="\\{",c=x="\\}",l.output=H;for(let U of X)l.output+=U.output||U.value}S({type:"brace",value:c,output:x}),F("braces"),C.pop();continue}if(c==="|"){$.length>0&&$[$.length-1].conditions++,S({type:"text",value:c});continue}if(c===","){let p=c,x=C[C.length-1];x&&te[te.length-1]==="braces"&&(x.comma=!0,p="|"),S({type:"comma",value:c,output:p});continue}if(c==="/"){if(i.type==="dot"&&l.index===l.start+1){l.start=l.index+1,l.consumed="",l.output="",a.pop(),i=u;continue}S({type:"slash",value:c,output:m});continue}if(c==="."){if(l.braces>0&&i.type==="dot"){i.value==="."&&(i.output=y);let p=C[C.length-1];i.type="dots",i.output+=c,i.value+=c,p.dots=!0;continue}if(l.braces+l.parens===0&&i.type!=="bos"&&i.type!=="slash"){S({type:"text",value:c,output:y});continue}S({type:"dot",value:c,output:y});continue}if(c==="?"){if(!(i&&i.value==="(")&&r.noextglob!==!0&&R()==="("&&R(2)!=="?"){Ae("qmark",c);continue}if(i&&i.type==="paren"){let x=R(),H=c;if(x==="<"&&!Z.supportsLookbehinds())throw new Error("Node.js v10 or higher is required for regex lookbehinds");(i.value==="("&&!/[!=<:]/.test(x)||x==="<"&&!/<([!=]|\w+>)/.test(K()))&&(H=`\\${c}`),S({type:"text",value:c,output:H});continue}if(r.dot!==!0&&(i.type==="slash"||i.type==="bos")){S({type:"qmark",value:c,output:B});continue}S({type:"qmark",value:c,output:L});continue}if(c==="!"){if(r.noextglob!==!0&&R()==="("&&(R(2)!=="?"||!/[!=<:]/.test(R(3)))){Ae("negate",c);continue}if(r.nonegate!==!0&&l.index===0){Ee();continue}}if(c==="+"){if(r.noextglob!==!0&&R()==="("&&R(2)!=="?"){Ae("plus",c);continue}if(i&&i.value==="("||r.regex===!1){S({type:"plus",value:c,output:_});continue}if(i&&(i.type==="bracket"||i.type==="paren"||i.type==="brace")||l.parens>0){S({type:"plus",value:c});continue}S({type:"plus",value:_});continue}if(c==="@"){if(r.noextglob!==!0&&R()==="("&&R(2)!=="?"){S({type:"at",extglob:!0,value:c,output:""});continue}S({type:"text",value:c});continue}if(c!=="*"){(c==="$"||c==="^")&&(c=`\\${c}`);let p=un.exec(K());p&&(c+=p[0],l.index+=p[0].length),S({type:"text",value:c});continue}if(i&&(i.type==="globstar"||i.star===!0)){i.type="star",i.star=!0,i.value+=c,i.output=I,l.backtrack=!0,l.globstar=!0,M(c);continue}let v=K();if(r.noextglob!==!0&&/^\([^?]/.test(v)){Ae("star",c);continue}if(i.type==="star"){if(r.noglobstar===!0){M(c);continue}let p=i.prev,x=p.prev,H=p.type==="slash"||p.type==="bos",X=x&&(x.type==="star"||x.type==="globstar");if(r.bash===!0&&(!H||v[0]&&v[0]!=="/")){S({type:"star",value:c,output:""});continue}let U=l.braces>0&&(p.type==="comma"||p.type==="brace"),Ge=$.length&&(p.type==="pipe"||p.type==="paren");if(!H&&p.type!=="paren"&&!U&&!Ge){S({type:"star",value:c,output:""});continue}for(;v.slice(0,3)==="/**";){let xe=e[l.index+4];if(xe&&xe!=="/")break;v=v.slice(3),M("/**",3)}if(p.type==="bos"&&q()){i.type="globstar",i.value+=c,i.output=P(r),l.output=i.output,l.globstar=!0,M(c);continue}if(p.type==="slash"&&p.prev.type!=="bos"&&!X&&q()){l.output=l.output.slice(0,-(p.output+i.output).length),p.output=`(?:${p.output}`,i.type="globstar",i.output=P(r)+(r.strictSlashes?")":"|$)"),i.value+=c,l.globstar=!0,l.output+=p.output+i.output,M(c);continue}if(p.type==="slash"&&p.prev.type!=="bos"&&v[0]==="/"){let xe=v[1]!==void 0?"|$":"";l.output=l.output.slice(0,-(p.output+i.output).length),p.output=`(?:${p.output}`,i.type="globstar",i.output=`${P(r)}${m}|${m}${xe})`,i.value+=c,l.output+=p.output+i.output,l.globstar=!0,M(c+D()),S({type:"slash",value:"/",output:""});continue}if(p.type==="bos"&&v[0]==="/"){i.type="globstar",i.value+=c,i.output=`(?:^|${m}|${P(r)}${m})`,l.output=i.output,l.globstar=!0,M(c+D()),S({type:"slash",value:"/",output:""});continue}l.output=l.output.slice(0,-i.output.length),i.type="globstar",i.output=P(r),i.value+=c,l.output+=i.output,l.globstar=!0,M(c);continue}let T={type:"star",value:c,output:I};if(r.bash===!0){T.output=".*?",(i.type==="bos"||i.type==="slash")&&(T.output=g+T.output),S(T);continue}if(i&&(i.type==="bracket"||i.type==="paren")&&r.regex===!0){T.output=c,S(T);continue}(l.index===l.start||i.type==="slash"||i.type==="dot")&&(i.type==="dot"?(l.output+=W,i.output+=W):r.dot===!0?(l.output+=V,i.output+=V):(l.output+=g,i.output+=g),R()!=="*"&&(l.output+=E,i.output+=E)),S(T)}for(;l.brackets>0;){if(r.strictBrackets===!0)throw new SyntaxError(le("closing","]"));l.output=Z.escapeLast(l.output,"["),F("brackets")}for(;l.parens>0;){if(r.strictBrackets===!0)throw new SyntaxError(le("closing",")"));l.output=Z.escapeLast(l.output,"("),F("parens")}for(;l.braces>0;){if(r.strictBrackets===!0)throw new SyntaxError(le("closing","}"));l.output=Z.escapeLast(l.output,"{"),F("braces")}if(r.strictSlashes!==!0&&(i.type==="star"||i.type==="bracket")&&S({type:"maybe_slash",value:"",output:`${m}?`}),l.backtrack===!0){l.output="";for(let v of l.tokens)l.output+=v.output!=null?v.output:v.value,v.suffix&&(l.output+=v.suffix)}return l};Ye.fastpaths=(e,t)=>{let r={...t},s=typeof r.maxLength=="number"?Math.min(Ce,r.maxLength):Ce,n=e.length;if(n>s)throw new SyntaxError(`Input length: ${n}, exceeds maximum allowed length: ${s}`);e=Jt[e]||e;let u=Z.isWindows(t),{DOT_LITERAL:a,SLASH_LITERAL:f,ONE_CHAR:o,DOTS_SLASH:d,NO_DOT:h,NO_DOTS:y,NO_DOTS_SLASH:_,STAR:m,START_ANCHOR:E}=we.globChars(u),A=r.dot?y:h,k=r.dot?_:h,W=r.capture?"":"?:",V={negated:!1,prefix:""},L=r.bash===!0?".*?":m;r.capture&&(L=`(${L})`);let B=g=>g.noglobstar===!0?L:`(${W}(?:(?!${E}${g.dot?d:a}).)*?)`,O=g=>{switch(g){case"*":return`${A}${o}${L}`;case".*":return`${a}${o}${L}`;case"*.*":return`${A}${L}${a}${o}${L}`;case"*/*":return`${A}${L}${f}${o}${k}${L}`;case"**":return A+B(r);case"**/*":return`(?:${A}${B(r)}${f})?${k}${o}${L}`;case"**/*.*":return`(?:${A}${B(r)}${f})?${k}${L}${a}${o}${L}`;case"**/.*":return`(?:${A}${B(r)}${f})?${a}${o}${L}`;default:{let w=/^(.*?)\.(\w+)$/.exec(g);if(!w)return;let I=O(w[1]);return I?I+a+w[2]:void 0}}},ee=Z.removePrefix(e,V),P=O(ee);return P&&r.strictSlashes!==!0&&(P+=`${f}?`),P};Qt.exports=Ye});var er=b((Fo,Zt)=>{"use strict";var fn=Y("path"),pn=Vt(),Ze=Yt(),et=Se(),hn=he(),dn=e=>e&&typeof e=="object"&&!Array.isArray(e),N=(e,t,r=!1)=>{if(Array.isArray(e)){let h=e.map(_=>N(_,t,r));return _=>{for(let m of h){let E=m(_);if(E)return E}return!1}}let s=dn(e)&&e.tokens&&e.input;if(e===""||typeof e!="string"&&!s)throw new TypeError("Expected pattern to be a non-empty string");let n=t||{},u=et.isWindows(t),a=s?N.compileRe(e,t):N.makeRe(e,t,!1,!0),f=a.state;delete a.state;let o=()=>!1;if(n.ignore){let h={...t,ignore:null,onMatch:null,onResult:null};o=N(n.ignore,h,r)}let d=(h,y=!1)=>{let{isMatch:_,match:m,output:E}=N.test(h,a,t,{glob:e,posix:u}),A={glob:e,state:f,regex:a,posix:u,input:h,output:E,match:m,isMatch:_};return typeof n.onResult=="function"&&n.onResult(A),_===!1?(A.isMatch=!1,y?A:!1):o(h)?(typeof n.onIgnore=="function"&&n.onIgnore(A),A.isMatch=!1,y?A:!1):(typeof n.onMatch=="function"&&n.onMatch(A),y?A:!0)};return r&&(d.state=f),d};N.test=(e,t,r,{glob:s,posix:n}={})=>{if(typeof e!="string")throw new TypeError("Expected input to be a string");if(e==="")return{isMatch:!1,output:""};let u=r||{},a=u.format||(n?et.toPosixSlashes:null),f=e===s,o=f&&a?a(e):e;return f===!1&&(o=a?a(e):e,f=o===s),(f===!1||u.capture===!0)&&(u.matchBase===!0||u.basename===!0?f=N.matchBase(e,t,r,n):f=t.exec(o)),{isMatch:Boolean(f),match:f,output:o}};N.matchBase=(e,t,r,s=et.isWindows(r))=>(t instanceof RegExp?t:N.makeRe(t,r)).test(fn.basename(e));N.isMatch=(e,t,r)=>N(t,r)(e);N.parse=(e,t)=>Array.isArray(e)?e.map(r=>N.parse(r,t)):Ze(e,{...t,fastpaths:!1});N.scan=(e,t)=>pn(e,t);N.compileRe=(e,t,r=!1,s=!1)=>{if(r===!0)return e.output;let n=t||{},u=n.contains?"":"^",a=n.contains?"":"$",f=`${u}(?:${e.output})${a}`;e&&e.negated===!0&&(f=`^(?!${f}).*$`);let o=N.toRegex(f,t);return s===!0&&(o.state=e),o};N.makeRe=(e,t={},r=!1,s=!1)=>{if(!e||typeof e!="string")throw new TypeError("Expected a non-empty string");let n={negated:!1,fastpaths:!0};return t.fastpaths!==!1&&(e[0]==="."||e[0]==="*")&&(n.output=Ze.fastpaths(e,t)),n.output||(n=Ze(e,t)),N.compileRe(n,t,r,s)};N.toRegex=(e,t)=>{try{let r=t||{};return new RegExp(e,r.flags||(r.nocase?"i":""))}catch(r){if(t&&t.debug===!0)throw r;return/$^/}};N.constants=hn;Zt.exports=N});var rr=b((jo,tr)=>{"use strict";tr.exports=er()});var rt=b((zo,ir)=>{"use strict";ir.exports=function(t,r){return function(){for(var n=new Array(arguments.length),u=0;u<n.length;u++)n[u]=arguments[u];return t.apply(r,n)}}});var z=b((Wo,cr)=>{"use strict";var xn=rt(),ae=Object.prototype.toString;function ot(e){return ae.call(e)==="[object Array]"}function st(e){return typeof e>"u"}function bn(e){return e!==null&&!st(e)&&e.constructor!==null&&!st(e.constructor)&&typeof e.constructor.isBuffer=="function"&&e.constructor.isBuffer(e)}function Sn(e){return ae.call(e)==="[object ArrayBuffer]"}function wn(e){return typeof FormData<"u"&&e instanceof FormData}function Cn(e){var t;return typeof ArrayBuffer<"u"&&ArrayBuffer.isView?t=ArrayBuffer.isView(e):t=e&&e.buffer&&e.buffer instanceof ArrayBuffer,t}function $n(e){return typeof e=="string"}function On(e){return typeof e=="number"}function ar(e){return e!==null&&typeof e=="object"}function Oe(e){if(ae.call(e)!=="[object Object]")return!1;var t=Object.getPrototypeOf(e);return t===null||t===Object.prototype}function Tn(e){return ae.call(e)==="[object Date]"}function Ln(e){return ae.call(e)==="[object File]"}function qn(e){return ae.call(e)==="[object Blob]"}function ur(e){return ae.call(e)==="[object Function]"}function Hn(e){return ar(e)&&ur(e.pipe)}function Nn(e){return typeof URLSearchParams<"u"&&e instanceof URLSearchParams}function kn(e){return e.trim?e.trim():e.replace(/^\s+|\s+$/g,"")}function Bn(){return typeof navigator<"u"&&(navigator.product==="ReactNative"||navigator.product==="NativeScript"||navigator.product==="NS")?!1:typeof window<"u"&&typeof document<"u"}function it(e,t){if(!(e===null||typeof e>"u"))if(typeof e!="object"&&(e=[e]),ot(e))for(var r=0,s=e.length;r<s;r++)t.call(null,e[r],r,e);else for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.call(null,e[n],n,e)}function nt(){var e={};function t(n,u){Oe(e[u])&&Oe(n)?e[u]=nt(e[u],n):Oe(n)?e[u]=nt({},n):ot(n)?e[u]=n.slice():e[u]=n}for(var r=0,s=arguments.length;r<s;r++)it(arguments[r],t);return e}function In(e,t,r){return it(t,function(n,u){r&&typeof n=="function"?e[u]=xn(n,r):e[u]=n}),e}function Un(e){return e.charCodeAt(0)===65279&&(e=e.slice(1)),e}cr.exports={isArray:ot,isArrayBuffer:Sn,isBuffer:bn,isFormData:wn,isArrayBufferView:Cn,isString:$n,isNumber:On,isObject:ar,isPlainObject:Oe,isUndefined:st,isDate:Tn,isFile:Ln,isBlob:qn,isFunction:ur,isStream:Hn,isURLSearchParams:Nn,isStandardBrowserEnv:Bn,forEach:it,merge:nt,extend:In,trim:kn,stripBOM:Un}});var Te=b((Vo,fr)=>{"use strict";var fe=z();function lr(e){return encodeURIComponent(e).replace(/%3A/gi,":").replace(/%24/g,"$").replace(/%2C/gi,",").replace(/%20/g,"+").replace(/%5B/gi,"[").replace(/%5D/gi,"]")}fr.exports=function(t,r,s){if(!r)return t;var n;if(s)n=s(r);else if(fe.isURLSearchParams(r))n=r.toString();else{var u=[];fe.forEach(r,function(o,d){o===null||typeof o>"u"||(fe.isArray(o)?d=d+"[]":o=[o],fe.forEach(o,function(y){fe.isDate(y)?y=y.toISOString():fe.isObject(y)&&(y=JSON.stringify(y)),u.push(lr(d)+"="+lr(y))}))}),n=u.join("&")}if(n){var a=t.indexOf("#");a!==-1&&(t=t.slice(0,a)),t+=(t.indexOf("?")===-1?"?":"&")+n}return t}});var hr=b((Jo,pr)=>{"use strict";var Pn=z();function Le(){this.handlers=[]}Le.prototype.use=function(t,r,s){return this.handlers.push({fulfilled:t,rejected:r,synchronous:s?s.synchronous:!1,runWhen:s?s.runWhen:null}),this.handlers.length-1};Le.prototype.eject=function(t){this.handlers[t]&&(this.handlers[t]=null)};Le.prototype.forEach=function(t){Pn.forEach(this.handlers,function(s){s!==null&&t(s)})};pr.exports=Le});var mr=b((Qo,dr)=>{"use strict";var Dn=z();dr.exports=function(t,r){Dn.forEach(t,function(n,u){u!==r&&u.toUpperCase()===r.toUpperCase()&&(t[r]=n,delete t[u])})}});var qe=b((Yo,vr)=>{"use strict";vr.exports=function(t,r,s,n,u){return t.config=r,s&&(t.code=s),t.request=n,t.response=u,t.isAxiosError=!0,t.toJSON=function(){return{message:this.message,name:this.name,description:this.description,number:this.number,fileName:this.fileName,lineNumber:this.lineNumber,columnNumber:this.columnNumber,stack:this.stack,config:this.config,code:this.code}},t}});var He=b((Zo,yr)=>{"use strict";var Mn=qe();yr.exports=function(t,r,s,n,u){var a=new Error(t);return Mn(a,r,s,n,u)}});var at=b((ei,Rr)=>{"use strict";var Fn=He();Rr.exports=function(t,r,s){var n=s.config.validateStatus;!s.status||!n||n(s.status)?t(s):r(Fn("Request failed with status code "+s.status,s.config,null,s.request,s))}});var gr=b((ti,_r)=>{"use strict";var Ne=z();_r.exports=Ne.isStandardBrowserEnv()?function(){return{write:function(r,s,n,u,a,f){var o=[];o.push(r+"="+encodeURIComponent(s)),Ne.isNumber(n)&&o.push("expires="+new Date(n).toGMTString()),Ne.isString(u)&&o.push("path="+u),Ne.isString(a)&&o.push("domain="+a),f===!0&&o.push("secure"),document.cookie=o.join("; ")},read:function(r){var s=document.cookie.match(new RegExp("(^|;\\s*)("+r+")=([^;]*)"));return s?decodeURIComponent(s[3]):null},remove:function(r){this.write(r,"",Date.now()-864e5)}}}():function(){return{write:function(){},read:function(){return null},remove:function(){}}}()});var Ar=b((ri,Er)=>{"use strict";Er.exports=function(t){return/^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(t)}});var br=b((si,xr)=>{"use strict";xr.exports=function(t,r){return r?t.replace(/\/+$/,"")+"/"+r.replace(/^\/+/,""):t}});var ut=b((ni,Sr)=>{"use strict";var jn=Ar(),Gn=br();Sr.exports=function(t,r){return t&&!jn(r)?Gn(t,r):r}});var Cr=b((oi,wr)=>{"use strict";var ct=z(),Kn=["age","authorization","content-length","content-type","etag","expires","from","host","if-modified-since","if-unmodified-since","last-modified","location","max-forwards","proxy-authorization","referer","retry-after","user-agent"];wr.exports=function(t){var r={},s,n,u;return t&&ct.forEach(t.split(`
-`),function(f){if(u=f.indexOf(":"),s=ct.trim(f.substr(0,u)).toLowerCase(),n=ct.trim(f.substr(u+1)),s){if(r[s]&&Kn.indexOf(s)>=0)return;s==="set-cookie"?r[s]=(r[s]?r[s]:[]).concat([n]):r[s]=r[s]?r[s]+", "+n:n}}),r}});var Tr=b((ii,Or)=>{"use strict";var $r=z();Or.exports=$r.isStandardBrowserEnv()?function(){var t=/(msie|trident)/i.test(navigator.userAgent),r=document.createElement("a"),s;function n(u){var a=u;return t&&(r.setAttribute("href",a),a=r.href),r.setAttribute("href",a),{href:r.href,protocol:r.protocol?r.protocol.replace(/:$/,""):"",host:r.host,search:r.search?r.search.replace(/^\?/,""):"",hash:r.hash?r.hash.replace(/^#/,""):"",hostname:r.hostname,port:r.port,pathname:r.pathname.charAt(0)==="/"?r.pathname:"/"+r.pathname}}return s=n(window.location.href),function(a){var f=$r.isString(a)?n(a):a;return f.protocol===s.protocol&&f.host===s.host}}():function(){return function(){return!0}}()});var qr=b((ai,Lr)=>{"use strict";var ke=z(),Xn=at(),zn=gr(),Wn=Te(),Vn=ut(),Jn=Cr(),Qn=Tr(),lt=He();Lr.exports=function(t){return new Promise(function(s,n){var u=t.data,a=t.headers,f=t.responseType;ke.isFormData(u)&&delete a["Content-Type"];var o=new XMLHttpRequest;if(t.auth){var d=t.auth.username||"",h=t.auth.password?unescape(encodeURIComponent(t.auth.password)):"";a.Authorization="Basic "+btoa(d+":"+h)}var y=Vn(t.baseURL,t.url);o.open(t.method.toUpperCase(),Wn(y,t.params,t.paramsSerializer),!0),o.timeout=t.timeout;function _(){if(!!o){var E="getAllResponseHeaders"in o?Jn(o.getAllResponseHeaders()):null,A=!f||f==="text"||f==="json"?o.responseText:o.response,k={data:A,status:o.status,statusText:o.statusText,headers:E,config:t,request:o};Xn(s,n,k),o=null}}if("onloadend"in o?o.onloadend=_:o.onreadystatechange=function(){!o||o.readyState!==4||o.status===0&&!(o.responseURL&&o.responseURL.indexOf("file:")===0)||setTimeout(_)},o.onabort=function(){!o||(n(lt("Request aborted",t,"ECONNABORTED",o)),o=null)},o.onerror=function(){n(lt("Network Error",t,null,o)),o=null},o.ontimeout=function(){var A="timeout of "+t.timeout+"ms exceeded";t.timeoutErrorMessage&&(A=t.timeoutErrorMessage),n(lt(A,t,t.transitional&&t.transitional.clarifyTimeoutError?"ETIMEDOUT":"ECONNABORTED",o)),o=null},ke.isStandardBrowserEnv()){var m=(t.withCredentials||Qn(y))&&t.xsrfCookieName?zn.read(t.xsrfCookieName):void 0;m&&(a[t.xsrfHeaderName]=m)}"setRequestHeader"in o&&ke.forEach(a,function(A,k){typeof u>"u"&&k.toLowerCase()==="content-type"?delete a[k]:o.setRequestHeader(k,A)}),ke.isUndefined(t.withCredentials)||(o.withCredentials=!!t.withCredentials),f&&f!=="json"&&(o.responseType=t.responseType),typeof t.onDownloadProgress=="function"&&o.addEventListener("progress",t.onDownloadProgress),typeof t.onUploadProgress=="function"&&o.upload&&o.upload.addEventListener("progress",t.onUploadProgress),t.cancelToken&&t.cancelToken.promise.then(function(A){!o||(o.abort(),n(A),o=null)}),u||(u=null),o.send(u)})}});var Nr=b((ui,Hr)=>{var me;Hr.exports=function(){if(!me){try{me=Y("debug")("follow-redirects")}catch{}typeof me!="function"&&(me=function(){})}me.apply(null,arguments)}});var xt=b((ci,At)=>{var ye=Y("url"),ve=ye.URL,Yn=Y("http"),Zn=Y("https"),mt=Y("stream").Writable,vt=Y("assert"),kr=Nr();(function(){var t=typeof process<"u",r=typeof window<"u"&&typeof document<"u",s=ce(Error.captureStackTrace);!t&&(r||!s)&&console.warn("The follow-redirects package should be excluded from browser builds.")})();var yt=!1;try{vt(new ve(""))}catch(e){yt=e.code==="ERR_INVALID_URL"}var eo=["auth","host","hostname","href","path","pathname","port","protocol","query","search","hash"],Rt=["abort","aborted","connect","error","socket","timeout"],_t=Object.create(null);Rt.forEach(function(e){_t[e]=function(t,r,s){this._redirectable.emit(e,t,r,s)}});var pt=Re("ERR_INVALID_URL","Invalid URL",TypeError),ht=Re("ERR_FR_REDIRECTION_FAILURE","Redirected request failed"),to=Re("ERR_FR_TOO_MANY_REDIRECTS","Maximum number of redirects exceeded",ht),ro=Re("ERR_FR_MAX_BODY_LENGTH_EXCEEDED","Request body larger than maxBodyLength limit"),so=Re("ERR_STREAM_WRITE_AFTER_END","write after end"),no=mt.prototype.destroy||Ir;function Q(e,t){mt.call(this),this._sanitizeOptions(e),this._options=e,this._ended=!1,this._ending=!1,this._redirectCount=0,this._redirects=[],this._requestBodyLength=0,this._requestBodyBuffers=[],t&&this.on("response",t);var r=this;this._onNativeResponse=function(s){try{r._processResponse(s)}catch(n){r.emit("error",n instanceof ht?n:new ht({cause:n}))}},this._performRequest()}Q.prototype=Object.create(mt.prototype);Q.prototype.abort=function(){Et(this._currentRequest),this._currentRequest.abort(),this.emit("abort")};Q.prototype.destroy=function(e){return Et(this._currentRequest,e),no.call(this,e),this};Q.prototype.write=function(e,t,r){if(this._ending)throw new so;if(!ue(e)&&!ao(e))throw new TypeError("data should be a string, Buffer or Uint8Array");if(ce(t)&&(r=t,t=null),e.length===0){r&&r();return}this._requestBodyLength+e.length<=this._options.maxBodyLength?(this._requestBodyLength+=e.length,this._requestBodyBuffers.push({data:e,encoding:t}),this._currentRequest.write(e,t,r)):(this.emit("error",new ro),this.abort())};Q.prototype.end=function(e,t,r){if(ce(e)?(r=e,e=t=null):ce(t)&&(r=t,t=null),!e)this._ended=this._ending=!0,this._currentRequest.end(null,null,r);else{var s=this,n=this._currentRequest;this.write(e,t,function(){s._ended=!0,n.end(null,null,r)}),this._ending=!0}};Q.prototype.setHeader=function(e,t){this._options.headers[e]=t,this._currentRequest.setHeader(e,t)};Q.prototype.removeHeader=function(e){delete this._options.headers[e],this._currentRequest.removeHeader(e)};Q.prototype.setTimeout=function(e,t){var r=this;function s(a){a.setTimeout(e),a.removeListener("timeout",a.destroy),a.addListener("timeout",a.destroy)}function n(a){r._timeout&&clearTimeout(r._timeout),r._timeout=setTimeout(function(){r.emit("timeout"),u()},e),s(a)}function u(){r._timeout&&(clearTimeout(r._timeout),r._timeout=null),r.removeListener("abort",u),r.removeListener("error",u),r.removeListener("response",u),r.removeListener("close",u),t&&r.removeListener("timeout",t),r.socket||r._currentRequest.removeListener("socket",n)}return t&&this.on("timeout",t),this.socket?n(this.socket):this._currentRequest.once("socket",n),this.on("socket",s),this.on("abort",u),this.on("error",u),this.on("response",u),this.on("close",u),this};["flushHeaders","getHeader","setNoDelay","setSocketKeepAlive"].forEach(function(e){Q.prototype[e]=function(t,r){return this._currentRequest[e](t,r)}});["aborted","connection","socket"].forEach(function(e){Object.defineProperty(Q.prototype,e,{get:function(){return this._currentRequest[e]}})});Q.prototype._sanitizeOptions=function(e){if(e.headers||(e.headers={}),e.host&&(e.hostname||(e.hostname=e.host),delete e.host),!e.pathname&&e.path){var t=e.path.indexOf("?");t<0?e.pathname=e.path:(e.pathname=e.path.substring(0,t),e.search=e.path.substring(t))}};Q.prototype._performRequest=function(){var e=this._options.protocol,t=this._options.nativeProtocols[e];if(!t)throw new TypeError("Unsupported protocol "+e);if(this._options.agents){var r=e.slice(0,-1);this._options.agent=this._options.agents[r]}var s=this._currentRequest=t.request(this._options,this._onNativeResponse);s._redirectable=this;for(var n of Rt)s.on(n,_t[n]);if(this._currentUrl=/^\//.test(this._options.path)?ye.format(this._options):this._options.path,this._isRedirect){var u=0,a=this,f=this._requestBodyBuffers;(function o(d){if(s===a._currentRequest)if(d)a.emit("error",d);else if(u<f.length){var h=f[u++];s.finished||s.write(h.data,h.encoding,o)}else a._ended&&s.end()})()}};Q.prototype._processResponse=function(e){var t=e.statusCode;this._options.trackRedirects&&this._redirects.push({url:this._currentUrl,headers:e.headers,statusCode:t});var r=e.headers.location;if(!r||this._options.followRedirects===!1||t<300||t>=400){e.responseUrl=this._currentUrl,e.redirects=this._redirects,this.emit("response",e),this._requestBodyBuffers=[];return}if(Et(this._currentRequest),e.destroy(),++this._redirectCount>this._options.maxRedirects)throw new to;var s,n=this._options.beforeRedirect;n&&(s=Object.assign({Host:e.req.getHeader("host")},this._options.headers));var u=this._options.method;((t===301||t===302)&&this._options.method==="POST"||t===303&&!/^(?:GET|HEAD)$/.test(this._options.method))&&(this._options.method="GET",this._requestBodyBuffers=[],ft(/^content-/i,this._options.headers));var a=ft(/^host$/i,this._options.headers),f=gt(this._currentUrl),o=a||f.host,d=/^\w+:/.test(r)?this._currentUrl:ye.format(Object.assign(f,{host:o})),h=oo(r,d);if(kr("redirecting to",h.href),this._isRedirect=!0,dt(h,this._options),(h.protocol!==f.protocol&&h.protocol!=="https:"||h.host!==o&&!io(h.host,o))&&ft(/^(?:(?:proxy-)?authorization|cookie)$/i,this._options.headers),ce(n)){var y={headers:e.headers,statusCode:t},_={url:d,method:u,headers:s};n(this._options,y,_),this._sanitizeOptions(this._options)}this._performRequest()};function Br(e){var t={maxRedirects:21,maxBodyLength:10485760},r={};return Object.keys(e).forEach(function(s){var n=s+":",u=r[n]=e[s],a=t[s]=Object.create(u);function f(d,h,y){return uo(d)?d=dt(d):ue(d)?d=dt(gt(d)):(y=h,h=Ur(d),d={protocol:n}),ce(h)&&(y=h,h=null),h=Object.assign({maxRedirects:t.maxRedirects,maxBodyLength:t.maxBodyLength},d,h),h.nativeProtocols=r,!ue(h.host)&&!ue(h.hostname)&&(h.hostname="::1"),vt.equal(h.protocol,n,"protocol mismatch"),kr("options",h),new Q(h,y)}function o(d,h,y){var _=a.request(d,h,y);return _.end(),_}Object.defineProperties(a,{request:{value:f,configurable:!0,enumerable:!0,writable:!0},get:{value:o,configurable:!0,enumerable:!0,writable:!0}})}),t}function Ir(){}function gt(e){var t;if(yt)t=new ve(e);else if(t=Ur(ye.parse(e)),!ue(t.protocol))throw new pt({input:e});return t}function oo(e,t){return yt?new ve(e,t):gt(ye.resolve(t,e))}function Ur(e){if(/^\[/.test(e.hostname)&&!/^\[[:0-9a-f]+\]$/i.test(e.hostname))throw new pt({input:e.href||e});if(/^\[/.test(e.host)&&!/^\[[:0-9a-f]+\](:\d+)?$/i.test(e.host))throw new pt({input:e.href||e});return e}function dt(e,t){var r=t||{};for(var s of eo)r[s]=e[s];return r.hostname.startsWith("[")&&(r.hostname=r.hostname.slice(1,-1)),r.port!==""&&(r.port=Number(r.port)),r.path=r.search?r.pathname+r.search:r.pathname,r}function ft(e,t){var r;for(var s in t)e.test(s)&&(r=t[s],delete t[s]);return r===null||typeof r>"u"?void 0:String(r).trim()}function Re(e,t,r){function s(n){ce(Error.captureStackTrace)&&Error.captureStackTrace(this,this.constructor),Object.assign(this,n||{}),this.code=e,this.message=this.cause?t+": "+this.cause.message:t}return s.prototype=new(r||Error),Object.defineProperties(s.prototype,{constructor:{value:s,enumerable:!1},name:{value:"Error ["+e+"]",enumerable:!1}}),s}function Et(e,t){for(var r of Rt)e.removeListener(r,_t[r]);e.on("error",Ir),e.destroy(t)}function io(e,t){vt(ue(e)&&ue(t));var r=e.length-t.length-1;return r>0&&e[r]==="."&&e.endsWith(t)}function ue(e){return typeof e=="string"||e instanceof String}function ce(e){return typeof e=="function"}function ao(e){return typeof e=="object"&&"length"in e}function uo(e){return ve&&e instanceof ve}At.exports=Br({http:Yn,https:Zn});At.exports.wrap=Br});var bt=b((li,co)=>{co.exports={name:"axios",version:"0.21.4",description:"Promise based HTTP client for the browser and node.js",main:"index.js",scripts:{test:"grunt test",start:"node ./sandbox/server.js",build:"NODE_ENV=production grunt build",preversion:"npm test",version:"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json",postversion:"git push && git push --tags",examples:"node ./examples/server.js",coveralls:"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",fix:"eslint --fix lib/**/*.js"},repository:{type:"git",url:"https://github.com/axios/axios.git"},keywords:["xhr","http","ajax","promise","node"],author:"Matt Zabriskie",license:"MIT",bugs:{url:"https://github.com/axios/axios/issues"},homepage:"https://axios-http.com",devDependencies:{coveralls:"^3.0.0","es6-promise":"^4.2.4",grunt:"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1",karma:"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2",minimist:"^1.2.0",mocha:"^8.2.1",sinon:"^4.5.0","terser-webpack-plugin":"^4.2.3",typescript:"^4.0.5","url-search-params":"^0.10.0",webpack:"^4.44.2","webpack-dev-server":"^3.11.0"},browser:{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},jsdelivr:"dist/axios.min.js",unpkg:"dist/axios.min.js",typings:"./index.d.ts",dependencies:{"follow-redirects":"^1.14.0"},bundlesize:[{path:"./dist/axios.min.js",threshold:"5kB"}]}});var Gr=b((fi,jr)=>{"use strict";var _e=z(),Pr=at(),lo=ut(),fo=Te(),po=Y("http"),ho=Y("https"),mo=xt().http,vo=xt().https,Dr=Y("url"),yo=Y("zlib"),Ro=bt(),Be=He(),St=qe(),Mr=/https:?/;function Fr(e,t,r){if(e.hostname=t.host,e.host=t.host,e.port=t.port,e.path=r,t.auth){var s=Buffer.from(t.auth.username+":"+t.auth.password,"utf8").toString("base64");e.headers["Proxy-Authorization"]="Basic "+s}e.beforeRedirect=function(u){u.headers.host=u.host,Fr(u,t,u.href)}}jr.exports=function(t){return new Promise(function(s,n){var u=function(R){s(R)},a=function(R){n(R)},f=t.data,o=t.headers;if("User-Agent"in o||"user-agent"in o?!o["User-Agent"]&&!o["user-agent"]&&(delete o["User-Agent"],delete o["user-agent"]):o["User-Agent"]="axios/"+Ro.version,f&&!_e.isStream(f)){if(!Buffer.isBuffer(f))if(_e.isArrayBuffer(f))f=Buffer.from(new Uint8Array(f));else if(_e.isString(f))f=Buffer.from(f,"utf-8");else return a(Be("Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream",t));o["Content-Length"]=f.length}var d=void 0;if(t.auth){var h=t.auth.username||"",y=t.auth.password||"";d=h+":"+y}var _=lo(t.baseURL,t.url),m=Dr.parse(_),E=m.protocol||"http:";if(!d&&m.auth){var A=m.auth.split(":"),k=A[0]||"",W=A[1]||"";d=k+":"+W}d&&delete o.Authorization;var V=Mr.test(E),L=V?t.httpsAgent:t.httpAgent,B={path:fo(m.path,t.params,t.paramsSerializer).replace(/^\?/,""),method:t.method.toUpperCase(),headers:o,agent:L,agents:{http:t.httpAgent,https:t.httpsAgent},auth:d};t.socketPath?B.socketPath=t.socketPath:(B.hostname=m.hostname,B.port=m.port);var O=t.proxy;if(!O&&O!==!1){var ee=E.slice(0,-1)+"_proxy",P=process.env[ee]||process.env[ee.toUpperCase()];if(P){var g=Dr.parse(P),w=process.env.no_proxy||process.env.NO_PROXY,I=!0;if(w){var l=w.split(",").map(function(R){return R.trim()});I=!l.some(function(R){return R?R==="*"||R[0]==="."&&m.hostname.substr(m.hostname.length-R.length)===R?!0:m.hostname===R:!1})}if(I&&(O={host:g.hostname,port:g.port,protocol:g.protocol},g.auth)){var $=g.auth.split(":");O.auth={username:$[0],password:$[1]}}}}O&&(B.headers.host=m.hostname+(m.port?":"+m.port:""),Fr(B,O,E+"//"+m.hostname+(m.port?":"+m.port:"")+B.path));var C,te=V&&(O?Mr.test(O.protocol):!0);t.transport?C=t.transport:t.maxRedirects===0?C=te?ho:po:(t.maxRedirects&&(B.maxRedirects=t.maxRedirects),C=te?vo:mo),t.maxBodyLength>-1&&(B.maxBodyLength=t.maxBodyLength);var i=C.request(B,function(R){if(!i.aborted){var D=R,K=R.req||i;if(R.statusCode!==204&&K.method!=="HEAD"&&t.decompress!==!1)switch(R.headers["content-encoding"]){case"gzip":case"compress":case"deflate":D=D.pipe(yo.createUnzip()),delete R.headers["content-encoding"];break}var M={status:R.statusCode,statusText:R.statusMessage,headers:R.headers,config:t,request:K};if(t.responseType==="stream")M.data=D,Pr(u,a,M);else{var oe=[],Ee=0;D.on("data",function(F){oe.push(F),Ee+=F.length,t.maxContentLength>-1&&Ee>t.maxContentLength&&(D.destroy(),a(Be("maxContentLength size of "+t.maxContentLength+" exceeded",t,null,K)))}),D.on("error",function(F){i.aborted||a(St(F,t,null,K))}),D.on("end",function(){var F=Buffer.concat(oe);t.responseType!=="arraybuffer"&&(F=F.toString(t.responseEncoding),(!t.responseEncoding||t.responseEncoding==="utf8")&&(F=_e.stripBOM(F))),M.data=F,Pr(u,a,M)})}}});if(i.on("error",function(R){i.aborted&&R.code!=="ERR_FR_TOO_MANY_REDIRECTS"||a(St(R,t,null,i))}),t.timeout){var c=parseInt(t.timeout,10);if(isNaN(c)){a(Be("error trying to parse `config.timeout` to int",t,"ERR_PARSE_TIMEOUT",i));return}i.setTimeout(c,function(){i.abort(),a(Be("timeout of "+c+"ms exceeded",t,t.transitional&&t.transitional.clarifyTimeoutError?"ETIMEDOUT":"ECONNABORTED",i))})}t.cancelToken&&t.cancelToken.promise.then(function(R){i.aborted||(i.abort(),a(R))}),_e.isStream(f)?f.on("error",function(R){a(St(R,t,null,i))}).pipe(i):i.end(f)})}});var Ue=b((pi,zr)=>{"use strict";var j=z(),Kr=mr(),_o=qe(),go={"Content-Type":"application/x-www-form-urlencoded"};function Xr(e,t){!j.isUndefined(e)&&j.isUndefined(e["Content-Type"])&&(e["Content-Type"]=t)}function Eo(){var e;return typeof XMLHttpRequest<"u"?e=qr():typeof process<"u"&&Object.prototype.toString.call(process)==="[object process]"&&(e=Gr()),e}function Ao(e,t,r){if(j.isString(e))try{return(t||JSON.parse)(e),j.trim(e)}catch(s){if(s.name!=="SyntaxError")throw s}return(r||JSON.stringify)(e)}var Ie={transitional:{silentJSONParsing:!0,forcedJSONParsing:!0,clarifyTimeoutError:!1},adapter:Eo(),transformRequest:[function(t,r){return Kr(r,"Accept"),Kr(r,"Content-Type"),j.isFormData(t)||j.isArrayBuffer(t)||j.isBuffer(t)||j.isStream(t)||j.isFile(t)||j.isBlob(t)?t:j.isArrayBufferView(t)?t.buffer:j.isURLSearchParams(t)?(Xr(r,"application/x-www-form-urlencoded;charset=utf-8"),t.toString()):j.isObject(t)||r&&r["Content-Type"]==="application/json"?(Xr(r,"application/json"),Ao(t)):t}],transformResponse:[function(t){var r=this.transitional,s=r&&r.silentJSONParsing,n=r&&r.forcedJSONParsing,u=!s&&this.responseType==="json";if(u||n&&j.isString(t)&&t.length)try{return JSON.parse(t)}catch(a){if(u)throw a.name==="SyntaxError"?_o(a,this,"E_JSON_PARSE"):a}return t}],timeout:0,xsrfCookieName:"XSRF-TOKEN",xsrfHeaderName:"X-XSRF-TOKEN",maxContentLength:-1,maxBodyLength:-1,validateStatus:function(t){return t>=200&&t<300}};Ie.headers={common:{Accept:"application/json, text/plain, */*"}};j.forEach(["delete","get","head"],function(t){Ie.headers[t]={}});j.forEach(["post","put","patch"],function(t){Ie.headers[t]=j.merge(go)});zr.exports=Ie});var Vr=b((hi,Wr)=>{"use strict";var xo=z(),bo=Ue();Wr.exports=function(t,r,s){var n=this||bo;return xo.forEach(s,function(a){t=a.call(n,t,r)}),t}});var wt=b((di,Jr)=>{"use strict";Jr.exports=function(t){return!!(t&&t.__CANCEL__)}});var Zr=b((mi,Yr)=>{"use strict";var Qr=z(),Ct=Vr(),So=wt(),wo=Ue();function $t(e){e.cancelToken&&e.cancelToken.throwIfRequested()}Yr.exports=function(t){$t(t),t.headers=t.headers||{},t.data=Ct.call(t,t.data,t.headers,t.transformRequest),t.headers=Qr.merge(t.headers.common||{},t.headers[t.method]||{},t.headers),Qr.forEach(["delete","get","head","post","put","patch","common"],function(n){delete t.headers[n]});var r=t.adapter||wo.adapter;return r(t).then(function(n){return $t(t),n.data=Ct.call(t,n.data,n.headers,t.transformResponse),n},function(n){return So(n)||($t(t),n&&n.response&&(n.response.data=Ct.call(t,n.response.data,n.response.headers,t.transformResponse))),Promise.reject(n)})}});var Ot=b((vi,es)=>{"use strict";var G=z();es.exports=function(t,r){r=r||{};var s={},n=["url","method","data"],u=["headers","auth","proxy","params"],a=["baseURL","transformRequest","transformResponse","paramsSerializer","timeout","timeoutMessage","withCredentials","adapter","responseType","xsrfCookieName","xsrfHeaderName","onUploadProgress","onDownloadProgress","decompress","maxContentLength","maxBodyLength","maxRedirects","transport","httpAgent","httpsAgent","cancelToken","socketPath","responseEncoding"],f=["validateStatus"];function o(_,m){return G.isPlainObject(_)&&G.isPlainObject(m)?G.merge(_,m):G.isPlainObject(m)?G.merge({},m):G.isArray(m)?m.slice():m}function d(_){G.isUndefined(r[_])?G.isUndefined(t[_])||(s[_]=o(void 0,t[_])):s[_]=o(t[_],r[_])}G.forEach(n,function(m){G.isUndefined(r[m])||(s[m]=o(void 0,r[m]))}),G.forEach(u,d),G.forEach(a,function(m){G.isUndefined(r[m])?G.isUndefined(t[m])||(s[m]=o(void 0,t[m])):s[m]=o(void 0,r[m])}),G.forEach(f,function(m){m in r?s[m]=o(t[m],r[m]):m in t&&(s[m]=o(void 0,t[m]))});var h=n.concat(u).concat(a).concat(f),y=Object.keys(t).concat(Object.keys(r)).filter(function(m){return h.indexOf(m)===-1});return G.forEach(y,d),s}});var os=b((yi,ns)=>{"use strict";var rs=bt(),Tt={};["object","boolean","number","function","string","symbol"].forEach(function(e,t){Tt[e]=function(s){return typeof s===e||"a"+(t<1?"n ":" ")+e}});var ts={},Co=rs.version.split(".");function ss(e,t){for(var r=t?t.split("."):Co,s=e.split("."),n=0;n<3;n++){if(r[n]>s[n])return!0;if(r[n]<s[n])return!1}return!1}Tt.transitional=function(t,r,s){var n=r&&ss(r);function u(a,f){return"[Axios v"+rs.version+"] Transitional option '"+a+"'"+f+(s?". "+s:"")}return function(a,f,o){if(t===!1)throw new Error(u(f," has been removed in "+r));return n&&!ts[f]&&(ts[f]=!0,console.warn(u(f," has been deprecated since v"+r+" and will be removed in the near future"))),t?t(a,f,o):!0}};function $o(e,t,r){if(typeof e!="object")throw new TypeError("options must be an object");for(var s=Object.keys(e),n=s.length;n-- >0;){var u=s[n],a=t[u];if(a){var f=e[u],o=f===void 0||a(f,u,e);if(o!==!0)throw new TypeError("option "+u+" must be "+o);continue}if(r!==!0)throw Error("Unknown option "+u)}}ns.exports={isOlderVersion:ss,assertOptions:$o,validators:Tt}});var fs=b((Ri,ls)=>{"use strict";var us=z(),Oo=Te(),is=hr(),as=Zr(),Pe=Ot(),cs=os(),pe=cs.validators;function ge(e){this.defaults=e,this.interceptors={request:new is,response:new is}}ge.prototype.request=function(t){typeof t=="string"?(t=arguments[1]||{},t.url=arguments[0]):t=t||{},t=Pe(this.defaults,t),t.method?t.method=t.method.toLowerCase():this.defaults.method?t.method=this.defaults.method.toLowerCase():t.method="get";var r=t.transitional;r!==void 0&&cs.assertOptions(r,{silentJSONParsing:pe.transitional(pe.boolean,"1.0.0"),forcedJSONParsing:pe.transitional(pe.boolean,"1.0.0"),clarifyTimeoutError:pe.transitional(pe.boolean,"1.0.0")},!1);var s=[],n=!0;this.interceptors.request.forEach(function(_){typeof _.runWhen=="function"&&_.runWhen(t)===!1||(n=n&&_.synchronous,s.unshift(_.fulfilled,_.rejected))});var u=[];this.interceptors.response.forEach(function(_){u.push(_.fulfilled,_.rejected)});var a;if(!n){var f=[as,void 0];for(Array.prototype.unshift.apply(f,s),f=f.concat(u),a=Promise.resolve(t);f.length;)a=a.then(f.shift(),f.shift());return a}for(var o=t;s.length;){var d=s.shift(),h=s.shift();try{o=d(o)}catch(y){h(y);break}}try{a=as(o)}catch(y){return Promise.reject(y)}for(;u.length;)a=a.then(u.shift(),u.shift());return a};ge.prototype.getUri=function(t){return t=Pe(this.defaults,t),Oo(t.url,t.params,t.paramsSerializer).replace(/^\?/,"")};us.forEach(["delete","get","head","options"],function(t){ge.prototype[t]=function(r,s){return this.request(Pe(s||{},{method:t,url:r,data:(s||{}).data}))}});us.forEach(["post","put","patch"],function(t){ge.prototype[t]=function(r,s,n){return this.request(Pe(n||{},{method:t,url:r,data:s}))}});ls.exports=ge});var qt=b((_i,ps)=>{"use strict";function Lt(e){this.message=e}Lt.prototype.toString=function(){return"Cancel"+(this.message?": "+this.message:"")};Lt.prototype.__CANCEL__=!0;ps.exports=Lt});var ds=b((gi,hs)=>{"use strict";var To=qt();function De(e){if(typeof e!="function")throw new TypeError("executor must be a function.");var t;this.promise=new Promise(function(n){t=n});var r=this;e(function(n){r.reason||(r.reason=new To(n),t(r.reason))})}De.prototype.throwIfRequested=function(){if(this.reason)throw this.reason};De.source=function(){var t,r=new De(function(n){t=n});return{token:r,cancel:t}};hs.exports=De});var vs=b((Ei,ms)=>{"use strict";ms.exports=function(t){return function(s){return t.apply(null,s)}}});var Rs=b((Ai,ys)=>{"use strict";ys.exports=function(t){return typeof t=="object"&&t.isAxiosError===!0}});var Es=b((xi,Ht)=>{"use strict";var _s=z(),Lo=rt(),Me=fs(),qo=Ot(),Ho=Ue();function gs(e){var t=new Me(e),r=Lo(Me.prototype.request,t);return _s.extend(r,Me.prototype,t),_s.extend(r,t),r}var re=gs(Ho);re.Axios=Me;re.create=function(t){return gs(qo(re.defaults,t))};re.Cancel=qt();re.CancelToken=ds();re.isCancel=wt();re.all=function(t){return Promise.all(t)};re.spread=vs();re.isAxiosError=Rs();Ht.exports=re;Ht.exports.default=re});var xs=b((bi,As)=>{As.exports=Es()});var or=Bt(rr(),1);import{extname as Ko,win32 as mn,posix as nr,isAbsolute as vn,resolve as yn}from"path";function Rn(e){return Array.isArray(e)}function sr(e){return Rn(e)?e:e==null?[]:[e]}var $e=function(t){return t.split(mn.sep).join(nr.sep)};function _n(e,t){if(t===!1||vn(e)||e.startsWith("*"))return $e(e);let r=$e(yn(t||"")).replace(/[-^$*+?.()|[\]{}]/g,"\\$&");return nr.join(r,$e(e))}var tt=function(t,r,s){let n=s&&s.resolve,u=o=>o instanceof RegExp?o:{test:d=>{let h=_n(o,n);return(0,or.default)(h,{dot:!0})(d)}},a=sr(t).map(u),f=sr(r).map(u);return function(d){if(typeof d!="string"||/\0/.test(d))return!1;let h=$e(d);for(let y=0;y<f.length;++y)if(f[y].test(h))return!1;for(let y=0;y<a.length;++y)if(a[y].test(h))return!0;return!a.length}},gn="break case class catch const continue debugger default delete do else export extends finally for function if import in instanceof let new return super switch this throw try typeof var void while with yield enum await implements package protected static interface private public",En="arguments Infinity NaN undefined null true false eval uneval isFinite isNaN parseFloat parseInt decodeURI decodeURIComponent encodeURI encodeURIComponent escape unescape Object Function Boolean Symbol Error EvalError InternalError RangeError ReferenceError SyntaxError TypeError URIError Number Math Date String RegExp Array Int8Array Uint8Array Uint8ClampedArray Int16Array Uint16Array Int32Array Uint32Array Float32Array Float64Array Map Set WeakMap WeakSet SIMD ArrayBuffer DataView JSON Promise Generator GeneratorFunction Reflect Proxy Intl",An=new Set(`${gn} ${En}`.split(" "));An.add("");var Ss=Bt(xs(),1),bs="[vite-plugin-iconify] ";function ws(e){let t={},r=/([:@]?\w[\w-]*)="([^"]*)"/g,s;for(;s=r.exec(e);)t[s[1]]=s[2];return t}function Fe(e,t,r){let s=`https://api.iconify.design/${e}/${t}.svg`,n=new URLSearchParams;return r.width&&n.set("width",r.width),r.height&&n.set("height",r.height),r.color&&n.set("color",r.color),r.flip&&n.set("flip",r.flip),`${s}?${n.toString()}`}async function je(e){console.log(`${bs}fetching svg: ${e}`);try{let t=await Ss.default.get(e,{responseType:"text"});if(t.status!==200)throw new Error(`HTTP ${t.status}`);return t.data}catch(t){throw new Error(`${bs}Failed to fetch SVG: ${t.message}`)}}async function No(e,t){let r=/<Icon\s+([^>]*?)\/>/g,s=[...e.matchAll(r)];if(!s.length)return;let n=e;for(let u of s){let a=u[0],f=ko(u[1]);if(!f.icon){console.warn("[vite-plugin-iconify] Missing 'icon' attribute in <Icon />.");continue}let[o,d]=f.icon.split(":");if(!o||!d){console.warn(`[vite-plugin-iconify] Invalid 'icon' format in <Icon />: "${f.icon}".`);continue}let h=Fe(o,d,f),y=await je(h);if(!y){console.warn(`[vite-plugin-iconify] Failed to fetch SVG for "${f.icon}".`);continue}let _=Object.entries(f).filter(([E])=>!["icon","width","height","color","flip"].includes(E)).map(([E,A])=>`${E}={${JSON.stringify(A)}}`).join(" "),m=y.replace("<svg",`<svg ${_}`);n=n.replace(a,m)}return n}function ko(e){let t={},r=/(\w[\w-]*)={"([^}]*)"}/g,s;for(;s=r.exec(e);)t[s[1]]=s[2];return t}var Cs=No;var Nt="[vite-plugin-iconify] ";function Bo(){let e=tt(["**/*.vue"]),t=tt(["**/*.jsx","**/*.tsx"]);return{name:"vite-plugin-iconify",enforce:"pre",async transform(r,s){if(!t(s))return Cs(r,s);if(!e(s))return;let n=/<Icon\s+([^>]*?)\/>/g,u=[...r.matchAll(n)];if(!u.length)return;let a=r;for(let f of u){let o=f[0],d=ws(f[1]);if(!d.icon){console.warn(`${Nt}Missing 'icon' attribute in <Icon />.`);continue}let[h,y]=d.icon.split(":");if(!h||!y){console.warn(`${Nt}Invalid 'icon' format in <Icon />: "${d.icon}".`);continue}let _=Fe(h,y,d),m=await je(_);if(!m){console.warn(`${Nt}Failed to fetch SVG for "${d.icon}".`);continue}let E=Object.entries(d).filter(([k])=>!["icon","width","height","color","flip"].includes(k)).map(([k,W])=>`${k}="${W}"`).join(" "),A=m.replace("<svg",`<svg ${E}`);a=a.replace(o,A)}return a}}}var Li=Bo;export{Li as default};
+var __create = Object.create;
+var __getProtoOf = Object.getPrototypeOf;
+var __defProp = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __toESM = (mod, isNodeMode, target) => {
+  target = mod != null ? __create(__getProtoOf(mod)) : {};
+  const to = isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
+  for (let key of __getOwnPropNames(mod))
+    if (!__hasOwnProp.call(to, key))
+      __defProp(to, key, {
+        get: () => mod[key],
+        enumerable: true
+      });
+  return to;
+};
+var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+
+// node_modules/picomatch/lib/constants.js
+var require_constants = __commonJS((exports, module) => {
+  var WIN_SLASH = "\\\\/";
+  var WIN_NO_SLASH = `[^${WIN_SLASH}]`;
+  var DOT_LITERAL = "\\.";
+  var PLUS_LITERAL = "\\+";
+  var QMARK_LITERAL = "\\?";
+  var SLASH_LITERAL = "\\/";
+  var ONE_CHAR = "(?=.)";
+  var QMARK = "[^/]";
+  var END_ANCHOR = `(?:${SLASH_LITERAL}|$)`;
+  var START_ANCHOR = `(?:^|${SLASH_LITERAL})`;
+  var DOTS_SLASH = `${DOT_LITERAL}{1,2}${END_ANCHOR}`;
+  var NO_DOT = `(?!${DOT_LITERAL})`;
+  var NO_DOTS = `(?!${START_ANCHOR}${DOTS_SLASH})`;
+  var NO_DOT_SLASH = `(?!${DOT_LITERAL}{0,1}${END_ANCHOR})`;
+  var NO_DOTS_SLASH = `(?!${DOTS_SLASH})`;
+  var QMARK_NO_DOT = `[^.${SLASH_LITERAL}]`;
+  var STAR = `${QMARK}*?`;
+  var SEP = "/";
+  var POSIX_CHARS = {
+    DOT_LITERAL,
+    PLUS_LITERAL,
+    QMARK_LITERAL,
+    SLASH_LITERAL,
+    ONE_CHAR,
+    QMARK,
+    END_ANCHOR,
+    DOTS_SLASH,
+    NO_DOT,
+    NO_DOTS,
+    NO_DOT_SLASH,
+    NO_DOTS_SLASH,
+    QMARK_NO_DOT,
+    STAR,
+    START_ANCHOR,
+    SEP
+  };
+  var WINDOWS_CHARS = {
+    ...POSIX_CHARS,
+    SLASH_LITERAL: `[${WIN_SLASH}]`,
+    QMARK: WIN_NO_SLASH,
+    STAR: `${WIN_NO_SLASH}*?`,
+    DOTS_SLASH: `${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$)`,
+    NO_DOT: `(?!${DOT_LITERAL})`,
+    NO_DOTS: `(?!(?:^|[${WIN_SLASH}])${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$))`,
+    NO_DOT_SLASH: `(?!${DOT_LITERAL}{0,1}(?:[${WIN_SLASH}]|$))`,
+    NO_DOTS_SLASH: `(?!${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$))`,
+    QMARK_NO_DOT: `[^.${WIN_SLASH}]`,
+    START_ANCHOR: `(?:^|[${WIN_SLASH}])`,
+    END_ANCHOR: `(?:[${WIN_SLASH}]|$)`,
+    SEP: "\\"
+  };
+  var POSIX_REGEX_SOURCE = {
+    alnum: "a-zA-Z0-9",
+    alpha: "a-zA-Z",
+    ascii: "\\x00-\\x7F",
+    blank: " \\t",
+    cntrl: "\\x00-\\x1F\\x7F",
+    digit: "0-9",
+    graph: "\\x21-\\x7E",
+    lower: "a-z",
+    print: "\\x20-\\x7E ",
+    punct: "\\-!\"#$%&'()\\*+,./:;<=>?@[\\]^_`{|}~",
+    space: " \\t\\r\\n\\v\\f",
+    upper: "A-Z",
+    word: "A-Za-z0-9_",
+    xdigit: "A-Fa-f0-9"
+  };
+  module.exports = {
+    MAX_LENGTH: 1024 * 64,
+    POSIX_REGEX_SOURCE,
+    REGEX_BACKSLASH: /\\(?![*+?^${}(|)[\]])/g,
+    REGEX_NON_SPECIAL_CHARS: /^[^@![\].,$*+?^{}()|\\/]+/,
+    REGEX_SPECIAL_CHARS: /[-*+?.^${}(|)[\]]/,
+    REGEX_SPECIAL_CHARS_BACKREF: /(\\?)((\W)(\3*))/g,
+    REGEX_SPECIAL_CHARS_GLOBAL: /([-*+?.^${}(|)[\]])/g,
+    REGEX_REMOVE_BACKSLASH: /(?:\[.*?[^\\]\]|\\(?=.))/g,
+    REPLACEMENTS: {
+      __proto__: null,
+      "***": "*",
+      "**/**": "**",
+      "**/**/**": "**"
+    },
+    CHAR_0: 48,
+    CHAR_9: 57,
+    CHAR_UPPERCASE_A: 65,
+    CHAR_LOWERCASE_A: 97,
+    CHAR_UPPERCASE_Z: 90,
+    CHAR_LOWERCASE_Z: 122,
+    CHAR_LEFT_PARENTHESES: 40,
+    CHAR_RIGHT_PARENTHESES: 41,
+    CHAR_ASTERISK: 42,
+    CHAR_AMPERSAND: 38,
+    CHAR_AT: 64,
+    CHAR_BACKWARD_SLASH: 92,
+    CHAR_CARRIAGE_RETURN: 13,
+    CHAR_CIRCUMFLEX_ACCENT: 94,
+    CHAR_COLON: 58,
+    CHAR_COMMA: 44,
+    CHAR_DOT: 46,
+    CHAR_DOUBLE_QUOTE: 34,
+    CHAR_EQUAL: 61,
+    CHAR_EXCLAMATION_MARK: 33,
+    CHAR_FORM_FEED: 12,
+    CHAR_FORWARD_SLASH: 47,
+    CHAR_GRAVE_ACCENT: 96,
+    CHAR_HASH: 35,
+    CHAR_HYPHEN_MINUS: 45,
+    CHAR_LEFT_ANGLE_BRACKET: 60,
+    CHAR_LEFT_CURLY_BRACE: 123,
+    CHAR_LEFT_SQUARE_BRACKET: 91,
+    CHAR_LINE_FEED: 10,
+    CHAR_NO_BREAK_SPACE: 160,
+    CHAR_PERCENT: 37,
+    CHAR_PLUS: 43,
+    CHAR_QUESTION_MARK: 63,
+    CHAR_RIGHT_ANGLE_BRACKET: 62,
+    CHAR_RIGHT_CURLY_BRACE: 125,
+    CHAR_RIGHT_SQUARE_BRACKET: 93,
+    CHAR_SEMICOLON: 59,
+    CHAR_SINGLE_QUOTE: 39,
+    CHAR_SPACE: 32,
+    CHAR_TAB: 9,
+    CHAR_UNDERSCORE: 95,
+    CHAR_VERTICAL_LINE: 124,
+    CHAR_ZERO_WIDTH_NOBREAK_SPACE: 65279,
+    extglobChars(chars) {
+      return {
+        "!": { type: "negate", open: "(?:(?!(?:", close: `))${chars.STAR})` },
+        "?": { type: "qmark", open: "(?:", close: ")?" },
+        "+": { type: "plus", open: "(?:", close: ")+" },
+        "*": { type: "star", open: "(?:", close: ")*" },
+        "@": { type: "at", open: "(?:", close: ")" }
+      };
+    },
+    globChars(win32) {
+      return win32 === true ? WINDOWS_CHARS : POSIX_CHARS;
+    }
+  };
+});
+
+// node_modules/picomatch/lib/utils.js
+var require_utils = __commonJS((exports) => {
+  var {
+    REGEX_BACKSLASH,
+    REGEX_REMOVE_BACKSLASH,
+    REGEX_SPECIAL_CHARS,
+    REGEX_SPECIAL_CHARS_GLOBAL
+  } = require_constants();
+  exports.isObject = (val) => val !== null && typeof val === "object" && !Array.isArray(val);
+  exports.hasRegexChars = (str) => REGEX_SPECIAL_CHARS.test(str);
+  exports.isRegexChar = (str) => str.length === 1 && exports.hasRegexChars(str);
+  exports.escapeRegex = (str) => str.replace(REGEX_SPECIAL_CHARS_GLOBAL, "\\$1");
+  exports.toPosixSlashes = (str) => str.replace(REGEX_BACKSLASH, "/");
+  exports.isWindows = () => {
+    if (typeof navigator !== "undefined" && navigator.platform) {
+      const platform = navigator.platform.toLowerCase();
+      return platform === "win32" || platform === "windows";
+    }
+    if (typeof process !== "undefined" && process.platform) {
+      return process.platform === "win32";
+    }
+    return false;
+  };
+  exports.removeBackslashes = (str) => {
+    return str.replace(REGEX_REMOVE_BACKSLASH, (match) => {
+      return match === "\\" ? "" : match;
+    });
+  };
+  exports.escapeLast = (input, char, lastIdx) => {
+    const idx = input.lastIndexOf(char, lastIdx);
+    if (idx === -1)
+      return input;
+    if (input[idx - 1] === "\\")
+      return exports.escapeLast(input, char, idx - 1);
+    return `${input.slice(0, idx)}\\${input.slice(idx)}`;
+  };
+  exports.removePrefix = (input, state = {}) => {
+    let output = input;
+    if (output.startsWith("./")) {
+      output = output.slice(2);
+      state.prefix = "./";
+    }
+    return output;
+  };
+  exports.wrapOutput = (input, state = {}, options = {}) => {
+    const prepend = options.contains ? "" : "^";
+    const append = options.contains ? "" : "$";
+    let output = `${prepend}(?:${input})${append}`;
+    if (state.negated === true) {
+      output = `(?:^(?!${output}).*$)`;
+    }
+    return output;
+  };
+  exports.basename = (path, { windows } = {}) => {
+    const segs = path.split(windows ? /[\\/]/ : "/");
+    const last = segs[segs.length - 1];
+    if (last === "") {
+      return segs[segs.length - 2];
+    }
+    return last;
+  };
+});
+
+// node_modules/picomatch/lib/scan.js
+var require_scan = __commonJS((exports, module) => {
+  var utils = require_utils();
+  var {
+    CHAR_ASTERISK,
+    CHAR_AT,
+    CHAR_BACKWARD_SLASH,
+    CHAR_COMMA,
+    CHAR_DOT,
+    CHAR_EXCLAMATION_MARK,
+    CHAR_FORWARD_SLASH,
+    CHAR_LEFT_CURLY_BRACE,
+    CHAR_LEFT_PARENTHESES,
+    CHAR_LEFT_SQUARE_BRACKET,
+    CHAR_PLUS,
+    CHAR_QUESTION_MARK,
+    CHAR_RIGHT_CURLY_BRACE,
+    CHAR_RIGHT_PARENTHESES,
+    CHAR_RIGHT_SQUARE_BRACKET
+  } = require_constants();
+  var isPathSeparator = (code) => {
+    return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
+  };
+  var depth = (token) => {
+    if (token.isPrefix !== true) {
+      token.depth = token.isGlobstar ? Infinity : 1;
+    }
+  };
+  var scan = (input, options) => {
+    const opts = options || {};
+    const length = input.length - 1;
+    const scanToEnd = opts.parts === true || opts.scanToEnd === true;
+    const slashes = [];
+    const tokens = [];
+    const parts = [];
+    let str = input;
+    let index = -1;
+    let start = 0;
+    let lastIndex = 0;
+    let isBrace = false;
+    let isBracket = false;
+    let isGlob = false;
+    let isExtglob = false;
+    let isGlobstar = false;
+    let braceEscaped = false;
+    let backslashes = false;
+    let negated = false;
+    let negatedExtglob = false;
+    let finished = false;
+    let braces = 0;
+    let prev;
+    let code;
+    let token = { value: "", depth: 0, isGlob: false };
+    const eos = () => index >= length;
+    const peek = () => str.charCodeAt(index + 1);
+    const advance = () => {
+      prev = code;
+      return str.charCodeAt(++index);
+    };
+    while (index < length) {
+      code = advance();
+      let next;
+      if (code === CHAR_BACKWARD_SLASH) {
+        backslashes = token.backslashes = true;
+        code = advance();
+        if (code === CHAR_LEFT_CURLY_BRACE) {
+          braceEscaped = true;
+        }
+        continue;
+      }
+      if (braceEscaped === true || code === CHAR_LEFT_CURLY_BRACE) {
+        braces++;
+        while (eos() !== true && (code = advance())) {
+          if (code === CHAR_BACKWARD_SLASH) {
+            backslashes = token.backslashes = true;
+            advance();
+            continue;
+          }
+          if (code === CHAR_LEFT_CURLY_BRACE) {
+            braces++;
+            continue;
+          }
+          if (braceEscaped !== true && code === CHAR_DOT && (code = advance()) === CHAR_DOT) {
+            isBrace = token.isBrace = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            if (scanToEnd === true) {
+              continue;
+            }
+            break;
+          }
+          if (braceEscaped !== true && code === CHAR_COMMA) {
+            isBrace = token.isBrace = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            if (scanToEnd === true) {
+              continue;
+            }
+            break;
+          }
+          if (code === CHAR_RIGHT_CURLY_BRACE) {
+            braces--;
+            if (braces === 0) {
+              braceEscaped = false;
+              isBrace = token.isBrace = true;
+              finished = true;
+              break;
+            }
+          }
+        }
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_FORWARD_SLASH) {
+        slashes.push(index);
+        tokens.push(token);
+        token = { value: "", depth: 0, isGlob: false };
+        if (finished === true)
+          continue;
+        if (prev === CHAR_DOT && index === start + 1) {
+          start += 2;
+          continue;
+        }
+        lastIndex = index + 1;
+        continue;
+      }
+      if (opts.noext !== true) {
+        const isExtglobChar = code === CHAR_PLUS || code === CHAR_AT || code === CHAR_ASTERISK || code === CHAR_QUESTION_MARK || code === CHAR_EXCLAMATION_MARK;
+        if (isExtglobChar === true && peek() === CHAR_LEFT_PARENTHESES) {
+          isGlob = token.isGlob = true;
+          isExtglob = token.isExtglob = true;
+          finished = true;
+          if (code === CHAR_EXCLAMATION_MARK && index === start) {
+            negatedExtglob = true;
+          }
+          if (scanToEnd === true) {
+            while (eos() !== true && (code = advance())) {
+              if (code === CHAR_BACKWARD_SLASH) {
+                backslashes = token.backslashes = true;
+                code = advance();
+                continue;
+              }
+              if (code === CHAR_RIGHT_PARENTHESES) {
+                isGlob = token.isGlob = true;
+                finished = true;
+                break;
+              }
+            }
+            continue;
+          }
+          break;
+        }
+      }
+      if (code === CHAR_ASTERISK) {
+        if (prev === CHAR_ASTERISK)
+          isGlobstar = token.isGlobstar = true;
+        isGlob = token.isGlob = true;
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_QUESTION_MARK) {
+        isGlob = token.isGlob = true;
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_LEFT_SQUARE_BRACKET) {
+        while (eos() !== true && (next = advance())) {
+          if (next === CHAR_BACKWARD_SLASH) {
+            backslashes = token.backslashes = true;
+            advance();
+            continue;
+          }
+          if (next === CHAR_RIGHT_SQUARE_BRACKET) {
+            isBracket = token.isBracket = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            break;
+          }
+        }
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (opts.nonegate !== true && code === CHAR_EXCLAMATION_MARK && index === start) {
+        negated = token.negated = true;
+        start++;
+        continue;
+      }
+      if (opts.noparen !== true && code === CHAR_LEFT_PARENTHESES) {
+        isGlob = token.isGlob = true;
+        if (scanToEnd === true) {
+          while (eos() !== true && (code = advance())) {
+            if (code === CHAR_LEFT_PARENTHESES) {
+              backslashes = token.backslashes = true;
+              code = advance();
+              continue;
+            }
+            if (code === CHAR_RIGHT_PARENTHESES) {
+              finished = true;
+              break;
+            }
+          }
+          continue;
+        }
+        break;
+      }
+      if (isGlob === true) {
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+    }
+    if (opts.noext === true) {
+      isExtglob = false;
+      isGlob = false;
+    }
+    let base = str;
+    let prefix = "";
+    let glob = "";
+    if (start > 0) {
+      prefix = str.slice(0, start);
+      str = str.slice(start);
+      lastIndex -= start;
+    }
+    if (base && isGlob === true && lastIndex > 0) {
+      base = str.slice(0, lastIndex);
+      glob = str.slice(lastIndex);
+    } else if (isGlob === true) {
+      base = "";
+      glob = str;
+    } else {
+      base = str;
+    }
+    if (base && base !== "" && base !== "/" && base !== str) {
+      if (isPathSeparator(base.charCodeAt(base.length - 1))) {
+        base = base.slice(0, -1);
+      }
+    }
+    if (opts.unescape === true) {
+      if (glob)
+        glob = utils.removeBackslashes(glob);
+      if (base && backslashes === true) {
+        base = utils.removeBackslashes(base);
+      }
+    }
+    const state = {
+      prefix,
+      input,
+      start,
+      base,
+      glob,
+      isBrace,
+      isBracket,
+      isGlob,
+      isExtglob,
+      isGlobstar,
+      negated,
+      negatedExtglob
+    };
+    if (opts.tokens === true) {
+      state.maxDepth = 0;
+      if (!isPathSeparator(code)) {
+        tokens.push(token);
+      }
+      state.tokens = tokens;
+    }
+    if (opts.parts === true || opts.tokens === true) {
+      let prevIndex;
+      for (let idx = 0;idx < slashes.length; idx++) {
+        const n = prevIndex ? prevIndex + 1 : start;
+        const i = slashes[idx];
+        const value = input.slice(n, i);
+        if (opts.tokens) {
+          if (idx === 0 && start !== 0) {
+            tokens[idx].isPrefix = true;
+            tokens[idx].value = prefix;
+          } else {
+            tokens[idx].value = value;
+          }
+          depth(tokens[idx]);
+          state.maxDepth += tokens[idx].depth;
+        }
+        if (idx !== 0 || value !== "") {
+          parts.push(value);
+        }
+        prevIndex = i;
+      }
+      if (prevIndex && prevIndex + 1 < input.length) {
+        const value = input.slice(prevIndex + 1);
+        parts.push(value);
+        if (opts.tokens) {
+          tokens[tokens.length - 1].value = value;
+          depth(tokens[tokens.length - 1]);
+          state.maxDepth += tokens[tokens.length - 1].depth;
+        }
+      }
+      state.slashes = slashes;
+      state.parts = parts;
+    }
+    return state;
+  };
+  module.exports = scan;
+});
+
+// node_modules/picomatch/lib/parse.js
+var require_parse = __commonJS((exports, module) => {
+  var constants = require_constants();
+  var utils = require_utils();
+  var {
+    MAX_LENGTH,
+    POSIX_REGEX_SOURCE,
+    REGEX_NON_SPECIAL_CHARS,
+    REGEX_SPECIAL_CHARS_BACKREF,
+    REPLACEMENTS
+  } = constants;
+  var expandRange = (args, options) => {
+    if (typeof options.expandRange === "function") {
+      return options.expandRange(...args, options);
+    }
+    args.sort();
+    const value = `[${args.join("-")}]`;
+    try {
+      new RegExp(value);
+    } catch (ex) {
+      return args.map((v) => utils.escapeRegex(v)).join("..");
+    }
+    return value;
+  };
+  var syntaxError = (type, char) => {
+    return `Missing ${type}: "${char}" - use "\\\\${char}" to match literal characters`;
+  };
+  var parse = (input, options) => {
+    if (typeof input !== "string") {
+      throw new TypeError("Expected a string");
+    }
+    input = REPLACEMENTS[input] || input;
+    const opts = { ...options };
+    const max = typeof opts.maxLength === "number" ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+    let len = input.length;
+    if (len > max) {
+      throw new SyntaxError(`Input length: ${len}, exceeds maximum allowed length: ${max}`);
+    }
+    const bos = { type: "bos", value: "", output: opts.prepend || "" };
+    const tokens = [bos];
+    const capture = opts.capture ? "" : "?:";
+    const PLATFORM_CHARS = constants.globChars(opts.windows);
+    const EXTGLOB_CHARS = constants.extglobChars(PLATFORM_CHARS);
+    const {
+      DOT_LITERAL,
+      PLUS_LITERAL,
+      SLASH_LITERAL,
+      ONE_CHAR,
+      DOTS_SLASH,
+      NO_DOT,
+      NO_DOT_SLASH,
+      NO_DOTS_SLASH,
+      QMARK,
+      QMARK_NO_DOT,
+      STAR,
+      START_ANCHOR
+    } = PLATFORM_CHARS;
+    const globstar = (opts2) => {
+      return `(${capture}(?:(?!${START_ANCHOR}${opts2.dot ? DOTS_SLASH : DOT_LITERAL}).)*?)`;
+    };
+    const nodot = opts.dot ? "" : NO_DOT;
+    const qmarkNoDot = opts.dot ? QMARK : QMARK_NO_DOT;
+    let star = opts.bash === true ? globstar(opts) : STAR;
+    if (opts.capture) {
+      star = `(${star})`;
+    }
+    if (typeof opts.noext === "boolean") {
+      opts.noextglob = opts.noext;
+    }
+    const state = {
+      input,
+      index: -1,
+      start: 0,
+      dot: opts.dot === true,
+      consumed: "",
+      output: "",
+      prefix: "",
+      backtrack: false,
+      negated: false,
+      brackets: 0,
+      braces: 0,
+      parens: 0,
+      quotes: 0,
+      globstar: false,
+      tokens
+    };
+    input = utils.removePrefix(input, state);
+    len = input.length;
+    const extglobs = [];
+    const braces = [];
+    const stack = [];
+    let prev = bos;
+    let value;
+    const eos = () => state.index === len - 1;
+    const peek = state.peek = (n = 1) => input[state.index + n];
+    const advance = state.advance = () => input[++state.index] || "";
+    const remaining = () => input.slice(state.index + 1);
+    const consume = (value2 = "", num = 0) => {
+      state.consumed += value2;
+      state.index += num;
+    };
+    const append = (token) => {
+      state.output += token.output != null ? token.output : token.value;
+      consume(token.value);
+    };
+    const negate = () => {
+      let count = 1;
+      while (peek() === "!" && (peek(2) !== "(" || peek(3) === "?")) {
+        advance();
+        state.start++;
+        count++;
+      }
+      if (count % 2 === 0) {
+        return false;
+      }
+      state.negated = true;
+      state.start++;
+      return true;
+    };
+    const increment = (type) => {
+      state[type]++;
+      stack.push(type);
+    };
+    const decrement = (type) => {
+      state[type]--;
+      stack.pop();
+    };
+    const push = (tok) => {
+      if (prev.type === "globstar") {
+        const isBrace = state.braces > 0 && (tok.type === "comma" || tok.type === "brace");
+        const isExtglob = tok.extglob === true || extglobs.length && (tok.type === "pipe" || tok.type === "paren");
+        if (tok.type !== "slash" && tok.type !== "paren" && !isBrace && !isExtglob) {
+          state.output = state.output.slice(0, -prev.output.length);
+          prev.type = "star";
+          prev.value = "*";
+          prev.output = star;
+          state.output += prev.output;
+        }
+      }
+      if (extglobs.length && tok.type !== "paren") {
+        extglobs[extglobs.length - 1].inner += tok.value;
+      }
+      if (tok.value || tok.output)
+        append(tok);
+      if (prev && prev.type === "text" && tok.type === "text") {
+        prev.output = (prev.output || prev.value) + tok.value;
+        prev.value += tok.value;
+        return;
+      }
+      tok.prev = prev;
+      tokens.push(tok);
+      prev = tok;
+    };
+    const extglobOpen = (type, value2) => {
+      const token = { ...EXTGLOB_CHARS[value2], conditions: 1, inner: "" };
+      token.prev = prev;
+      token.parens = state.parens;
+      token.output = state.output;
+      const output = (opts.capture ? "(" : "") + token.open;
+      increment("parens");
+      push({ type, value: value2, output: state.output ? "" : ONE_CHAR });
+      push({ type: "paren", extglob: true, value: advance(), output });
+      extglobs.push(token);
+    };
+    const extglobClose = (token) => {
+      let output = token.close + (opts.capture ? ")" : "");
+      let rest;
+      if (token.type === "negate") {
+        let extglobStar = star;
+        if (token.inner && token.inner.length > 1 && token.inner.includes("/")) {
+          extglobStar = globstar(opts);
+        }
+        if (extglobStar !== star || eos() || /^\)+$/.test(remaining())) {
+          output = token.close = `)$))${extglobStar}`;
+        }
+        if (token.inner.includes("*") && (rest = remaining()) && /^\.[^\\/.]+$/.test(rest)) {
+          const expression = parse(rest, { ...options, fastpaths: false }).output;
+          output = token.close = `)${expression})${extglobStar})`;
+        }
+        if (token.prev.type === "bos") {
+          state.negatedExtglob = true;
+        }
+      }
+      push({ type: "paren", extglob: true, value, output });
+      decrement("parens");
+    };
+    if (opts.fastpaths !== false && !/(^[*!]|[/()[\]{}"])/.test(input)) {
+      let backslashes = false;
+      let output = input.replace(REGEX_SPECIAL_CHARS_BACKREF, (m, esc, chars, first, rest, index) => {
+        if (first === "\\") {
+          backslashes = true;
+          return m;
+        }
+        if (first === "?") {
+          if (esc) {
+            return esc + first + (rest ? QMARK.repeat(rest.length) : "");
+          }
+          if (index === 0) {
+            return qmarkNoDot + (rest ? QMARK.repeat(rest.length) : "");
+          }
+          return QMARK.repeat(chars.length);
+        }
+        if (first === ".") {
+          return DOT_LITERAL.repeat(chars.length);
+        }
+        if (first === "*") {
+          if (esc) {
+            return esc + first + (rest ? star : "");
+          }
+          return star;
+        }
+        return esc ? m : `\\${m}`;
+      });
+      if (backslashes === true) {
+        if (opts.unescape === true) {
+          output = output.replace(/\\/g, "");
+        } else {
+          output = output.replace(/\\+/g, (m) => {
+            return m.length % 2 === 0 ? "\\\\" : m ? "\\" : "";
+          });
+        }
+      }
+      if (output === input && opts.contains === true) {
+        state.output = input;
+        return state;
+      }
+      state.output = utils.wrapOutput(output, state, options);
+      return state;
+    }
+    while (!eos()) {
+      value = advance();
+      if (value === "\x00") {
+        continue;
+      }
+      if (value === "\\") {
+        const next = peek();
+        if (next === "/" && opts.bash !== true) {
+          continue;
+        }
+        if (next === "." || next === ";") {
+          continue;
+        }
+        if (!next) {
+          value += "\\";
+          push({ type: "text", value });
+          continue;
+        }
+        const match = /^\\+/.exec(remaining());
+        let slashes = 0;
+        if (match && match[0].length > 2) {
+          slashes = match[0].length;
+          state.index += slashes;
+          if (slashes % 2 !== 0) {
+            value += "\\";
+          }
+        }
+        if (opts.unescape === true) {
+          value = advance();
+        } else {
+          value += advance();
+        }
+        if (state.brackets === 0) {
+          push({ type: "text", value });
+          continue;
+        }
+      }
+      if (state.brackets > 0 && (value !== "]" || prev.value === "[" || prev.value === "[^")) {
+        if (opts.posix !== false && value === ":") {
+          const inner = prev.value.slice(1);
+          if (inner.includes("[")) {
+            prev.posix = true;
+            if (inner.includes(":")) {
+              const idx = prev.value.lastIndexOf("[");
+              const pre = prev.value.slice(0, idx);
+              const rest2 = prev.value.slice(idx + 2);
+              const posix = POSIX_REGEX_SOURCE[rest2];
+              if (posix) {
+                prev.value = pre + posix;
+                state.backtrack = true;
+                advance();
+                if (!bos.output && tokens.indexOf(prev) === 1) {
+                  bos.output = ONE_CHAR;
+                }
+                continue;
+              }
+            }
+          }
+        }
+        if (value === "[" && peek() !== ":" || value === "-" && peek() === "]") {
+          value = `\\${value}`;
+        }
+        if (value === "]" && (prev.value === "[" || prev.value === "[^")) {
+          value = `\\${value}`;
+        }
+        if (opts.posix === true && value === "!" && prev.value === "[") {
+          value = "^";
+        }
+        prev.value += value;
+        append({ value });
+        continue;
+      }
+      if (state.quotes === 1 && value !== '"') {
+        value = utils.escapeRegex(value);
+        prev.value += value;
+        append({ value });
+        continue;
+      }
+      if (value === '"') {
+        state.quotes = state.quotes === 1 ? 0 : 1;
+        if (opts.keepQuotes === true) {
+          push({ type: "text", value });
+        }
+        continue;
+      }
+      if (value === "(") {
+        increment("parens");
+        push({ type: "paren", value });
+        continue;
+      }
+      if (value === ")") {
+        if (state.parens === 0 && opts.strictBrackets === true) {
+          throw new SyntaxError(syntaxError("opening", "("));
+        }
+        const extglob = extglobs[extglobs.length - 1];
+        if (extglob && state.parens === extglob.parens + 1) {
+          extglobClose(extglobs.pop());
+          continue;
+        }
+        push({ type: "paren", value, output: state.parens ? ")" : "\\)" });
+        decrement("parens");
+        continue;
+      }
+      if (value === "[") {
+        if (opts.nobracket === true || !remaining().includes("]")) {
+          if (opts.nobracket !== true && opts.strictBrackets === true) {
+            throw new SyntaxError(syntaxError("closing", "]"));
+          }
+          value = `\\${value}`;
+        } else {
+          increment("brackets");
+        }
+        push({ type: "bracket", value });
+        continue;
+      }
+      if (value === "]") {
+        if (opts.nobracket === true || prev && prev.type === "bracket" && prev.value.length === 1) {
+          push({ type: "text", value, output: `\\${value}` });
+          continue;
+        }
+        if (state.brackets === 0) {
+          if (opts.strictBrackets === true) {
+            throw new SyntaxError(syntaxError("opening", "["));
+          }
+          push({ type: "text", value, output: `\\${value}` });
+          continue;
+        }
+        decrement("brackets");
+        const prevValue = prev.value.slice(1);
+        if (prev.posix !== true && prevValue[0] === "^" && !prevValue.includes("/")) {
+          value = `/${value}`;
+        }
+        prev.value += value;
+        append({ value });
+        if (opts.literalBrackets === false || utils.hasRegexChars(prevValue)) {
+          continue;
+        }
+        const escaped = utils.escapeRegex(prev.value);
+        state.output = state.output.slice(0, -prev.value.length);
+        if (opts.literalBrackets === true) {
+          state.output += escaped;
+          prev.value = escaped;
+          continue;
+        }
+        prev.value = `(${capture}${escaped}|${prev.value})`;
+        state.output += prev.value;
+        continue;
+      }
+      if (value === "{" && opts.nobrace !== true) {
+        increment("braces");
+        const open = {
+          type: "brace",
+          value,
+          output: "(",
+          outputIndex: state.output.length,
+          tokensIndex: state.tokens.length
+        };
+        braces.push(open);
+        push(open);
+        continue;
+      }
+      if (value === "}") {
+        const brace = braces[braces.length - 1];
+        if (opts.nobrace === true || !brace) {
+          push({ type: "text", value, output: value });
+          continue;
+        }
+        let output = ")";
+        if (brace.dots === true) {
+          const arr = tokens.slice();
+          const range = [];
+          for (let i = arr.length - 1;i >= 0; i--) {
+            tokens.pop();
+            if (arr[i].type === "brace") {
+              break;
+            }
+            if (arr[i].type !== "dots") {
+              range.unshift(arr[i].value);
+            }
+          }
+          output = expandRange(range, opts);
+          state.backtrack = true;
+        }
+        if (brace.comma !== true && brace.dots !== true) {
+          const out = state.output.slice(0, brace.outputIndex);
+          const toks = state.tokens.slice(brace.tokensIndex);
+          brace.value = brace.output = "\\{";
+          value = output = "\\}";
+          state.output = out;
+          for (const t of toks) {
+            state.output += t.output || t.value;
+          }
+        }
+        push({ type: "brace", value, output });
+        decrement("braces");
+        braces.pop();
+        continue;
+      }
+      if (value === "|") {
+        if (extglobs.length > 0) {
+          extglobs[extglobs.length - 1].conditions++;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value === ",") {
+        let output = value;
+        const brace = braces[braces.length - 1];
+        if (brace && stack[stack.length - 1] === "braces") {
+          brace.comma = true;
+          output = "|";
+        }
+        push({ type: "comma", value, output });
+        continue;
+      }
+      if (value === "/") {
+        if (prev.type === "dot" && state.index === state.start + 1) {
+          state.start = state.index + 1;
+          state.consumed = "";
+          state.output = "";
+          tokens.pop();
+          prev = bos;
+          continue;
+        }
+        push({ type: "slash", value, output: SLASH_LITERAL });
+        continue;
+      }
+      if (value === ".") {
+        if (state.braces > 0 && prev.type === "dot") {
+          if (prev.value === ".")
+            prev.output = DOT_LITERAL;
+          const brace = braces[braces.length - 1];
+          prev.type = "dots";
+          prev.output += value;
+          prev.value += value;
+          brace.dots = true;
+          continue;
+        }
+        if (state.braces + state.parens === 0 && prev.type !== "bos" && prev.type !== "slash") {
+          push({ type: "text", value, output: DOT_LITERAL });
+          continue;
+        }
+        push({ type: "dot", value, output: DOT_LITERAL });
+        continue;
+      }
+      if (value === "?") {
+        const isGroup = prev && prev.value === "(";
+        if (!isGroup && opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          extglobOpen("qmark", value);
+          continue;
+        }
+        if (prev && prev.type === "paren") {
+          const next = peek();
+          let output = value;
+          if (prev.value === "(" && !/[!=<:]/.test(next) || next === "<" && !/<([!=]|\w+>)/.test(remaining())) {
+            output = `\\${value}`;
+          }
+          push({ type: "text", value, output });
+          continue;
+        }
+        if (opts.dot !== true && (prev.type === "slash" || prev.type === "bos")) {
+          push({ type: "qmark", value, output: QMARK_NO_DOT });
+          continue;
+        }
+        push({ type: "qmark", value, output: QMARK });
+        continue;
+      }
+      if (value === "!") {
+        if (opts.noextglob !== true && peek() === "(") {
+          if (peek(2) !== "?" || !/[!=<:]/.test(peek(3))) {
+            extglobOpen("negate", value);
+            continue;
+          }
+        }
+        if (opts.nonegate !== true && state.index === 0) {
+          negate();
+          continue;
+        }
+      }
+      if (value === "+") {
+        if (opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          extglobOpen("plus", value);
+          continue;
+        }
+        if (prev && prev.value === "(" || opts.regex === false) {
+          push({ type: "plus", value, output: PLUS_LITERAL });
+          continue;
+        }
+        if (prev && (prev.type === "bracket" || prev.type === "paren" || prev.type === "brace") || state.parens > 0) {
+          push({ type: "plus", value });
+          continue;
+        }
+        push({ type: "plus", value: PLUS_LITERAL });
+        continue;
+      }
+      if (value === "@") {
+        if (opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          push({ type: "at", extglob: true, value, output: "" });
+          continue;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value !== "*") {
+        if (value === "$" || value === "^") {
+          value = `\\${value}`;
+        }
+        const match = REGEX_NON_SPECIAL_CHARS.exec(remaining());
+        if (match) {
+          value += match[0];
+          state.index += match[0].length;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (prev && (prev.type === "globstar" || prev.star === true)) {
+        prev.type = "star";
+        prev.star = true;
+        prev.value += value;
+        prev.output = star;
+        state.backtrack = true;
+        state.globstar = true;
+        consume(value);
+        continue;
+      }
+      let rest = remaining();
+      if (opts.noextglob !== true && /^\([^?]/.test(rest)) {
+        extglobOpen("star", value);
+        continue;
+      }
+      if (prev.type === "star") {
+        if (opts.noglobstar === true) {
+          consume(value);
+          continue;
+        }
+        const prior = prev.prev;
+        const before = prior.prev;
+        const isStart = prior.type === "slash" || prior.type === "bos";
+        const afterStar = before && (before.type === "star" || before.type === "globstar");
+        if (opts.bash === true && (!isStart || rest[0] && rest[0] !== "/")) {
+          push({ type: "star", value, output: "" });
+          continue;
+        }
+        const isBrace = state.braces > 0 && (prior.type === "comma" || prior.type === "brace");
+        const isExtglob = extglobs.length && (prior.type === "pipe" || prior.type === "paren");
+        if (!isStart && prior.type !== "paren" && !isBrace && !isExtglob) {
+          push({ type: "star", value, output: "" });
+          continue;
+        }
+        while (rest.slice(0, 3) === "/**") {
+          const after = input[state.index + 4];
+          if (after && after !== "/") {
+            break;
+          }
+          rest = rest.slice(3);
+          consume("/**", 3);
+        }
+        if (prior.type === "bos" && eos()) {
+          prev.type = "globstar";
+          prev.value += value;
+          prev.output = globstar(opts);
+          state.output = prev.output;
+          state.globstar = true;
+          consume(value);
+          continue;
+        }
+        if (prior.type === "slash" && prior.prev.type !== "bos" && !afterStar && eos()) {
+          state.output = state.output.slice(0, -(prior.output + prev.output).length);
+          prior.output = `(?:${prior.output}`;
+          prev.type = "globstar";
+          prev.output = globstar(opts) + (opts.strictSlashes ? ")" : "|$)");
+          prev.value += value;
+          state.globstar = true;
+          state.output += prior.output + prev.output;
+          consume(value);
+          continue;
+        }
+        if (prior.type === "slash" && prior.prev.type !== "bos" && rest[0] === "/") {
+          const end = rest[1] !== undefined ? "|$" : "";
+          state.output = state.output.slice(0, -(prior.output + prev.output).length);
+          prior.output = `(?:${prior.output}`;
+          prev.type = "globstar";
+          prev.output = `${globstar(opts)}${SLASH_LITERAL}|${SLASH_LITERAL}${end})`;
+          prev.value += value;
+          state.output += prior.output + prev.output;
+          state.globstar = true;
+          consume(value + advance());
+          push({ type: "slash", value: "/", output: "" });
+          continue;
+        }
+        if (prior.type === "bos" && rest[0] === "/") {
+          prev.type = "globstar";
+          prev.value += value;
+          prev.output = `(?:^|${SLASH_LITERAL}|${globstar(opts)}${SLASH_LITERAL})`;
+          state.output = prev.output;
+          state.globstar = true;
+          consume(value + advance());
+          push({ type: "slash", value: "/", output: "" });
+          continue;
+        }
+        state.output = state.output.slice(0, -prev.output.length);
+        prev.type = "globstar";
+        prev.output = globstar(opts);
+        prev.value += value;
+        state.output += prev.output;
+        state.globstar = true;
+        consume(value);
+        continue;
+      }
+      const token = { type: "star", value, output: star };
+      if (opts.bash === true) {
+        token.output = ".*?";
+        if (prev.type === "bos" || prev.type === "slash") {
+          token.output = nodot + token.output;
+        }
+        push(token);
+        continue;
+      }
+      if (prev && (prev.type === "bracket" || prev.type === "paren") && opts.regex === true) {
+        token.output = value;
+        push(token);
+        continue;
+      }
+      if (state.index === state.start || prev.type === "slash" || prev.type === "dot") {
+        if (prev.type === "dot") {
+          state.output += NO_DOT_SLASH;
+          prev.output += NO_DOT_SLASH;
+        } else if (opts.dot === true) {
+          state.output += NO_DOTS_SLASH;
+          prev.output += NO_DOTS_SLASH;
+        } else {
+          state.output += nodot;
+          prev.output += nodot;
+        }
+        if (peek() !== "*") {
+          state.output += ONE_CHAR;
+          prev.output += ONE_CHAR;
+        }
+      }
+      push(token);
+    }
+    while (state.brackets > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", "]"));
+      state.output = utils.escapeLast(state.output, "[");
+      decrement("brackets");
+    }
+    while (state.parens > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", ")"));
+      state.output = utils.escapeLast(state.output, "(");
+      decrement("parens");
+    }
+    while (state.braces > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", "}"));
+      state.output = utils.escapeLast(state.output, "{");
+      decrement("braces");
+    }
+    if (opts.strictSlashes !== true && (prev.type === "star" || prev.type === "bracket")) {
+      push({ type: "maybe_slash", value: "", output: `${SLASH_LITERAL}?` });
+    }
+    if (state.backtrack === true) {
+      state.output = "";
+      for (const token of state.tokens) {
+        state.output += token.output != null ? token.output : token.value;
+        if (token.suffix) {
+          state.output += token.suffix;
+        }
+      }
+    }
+    return state;
+  };
+  parse.fastpaths = (input, options) => {
+    const opts = { ...options };
+    const max = typeof opts.maxLength === "number" ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+    const len = input.length;
+    if (len > max) {
+      throw new SyntaxError(`Input length: ${len}, exceeds maximum allowed length: ${max}`);
+    }
+    input = REPLACEMENTS[input] || input;
+    const {
+      DOT_LITERAL,
+      SLASH_LITERAL,
+      ONE_CHAR,
+      DOTS_SLASH,
+      NO_DOT,
+      NO_DOTS,
+      NO_DOTS_SLASH,
+      STAR,
+      START_ANCHOR
+    } = constants.globChars(opts.windows);
+    const nodot = opts.dot ? NO_DOTS : NO_DOT;
+    const slashDot = opts.dot ? NO_DOTS_SLASH : NO_DOT;
+    const capture = opts.capture ? "" : "?:";
+    const state = { negated: false, prefix: "" };
+    let star = opts.bash === true ? ".*?" : STAR;
+    if (opts.capture) {
+      star = `(${star})`;
+    }
+    const globstar = (opts2) => {
+      if (opts2.noglobstar === true)
+        return star;
+      return `(${capture}(?:(?!${START_ANCHOR}${opts2.dot ? DOTS_SLASH : DOT_LITERAL}).)*?)`;
+    };
+    const create = (str) => {
+      switch (str) {
+        case "*":
+          return `${nodot}${ONE_CHAR}${star}`;
+        case ".*":
+          return `${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "*.*":
+          return `${nodot}${star}${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "*/*":
+          return `${nodot}${star}${SLASH_LITERAL}${ONE_CHAR}${slashDot}${star}`;
+        case "**":
+          return nodot + globstar(opts);
+        case "**/*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${slashDot}${ONE_CHAR}${star}`;
+        case "**/*.*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${slashDot}${star}${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "**/.*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${DOT_LITERAL}${ONE_CHAR}${star}`;
+        default: {
+          const match = /^(.*?)\.(\w+)$/.exec(str);
+          if (!match)
+            return;
+          const source2 = create(match[1]);
+          if (!source2)
+            return;
+          return source2 + DOT_LITERAL + match[2];
+        }
+      }
+    };
+    const output = utils.removePrefix(input, state);
+    let source = create(output);
+    if (source && opts.strictSlashes !== true) {
+      source += `${SLASH_LITERAL}?`;
+    }
+    return source;
+  };
+  module.exports = parse;
+});
+
+// node_modules/picomatch/lib/picomatch.js
+var require_picomatch = __commonJS((exports, module) => {
+  var scan = require_scan();
+  var parse = require_parse();
+  var utils = require_utils();
+  var constants = require_constants();
+  var isObject = (val) => val && typeof val === "object" && !Array.isArray(val);
+  var picomatch = (glob, options, returnState = false) => {
+    if (Array.isArray(glob)) {
+      const fns = glob.map((input) => picomatch(input, options, returnState));
+      const arrayMatcher = (str) => {
+        for (const isMatch of fns) {
+          const state2 = isMatch(str);
+          if (state2)
+            return state2;
+        }
+        return false;
+      };
+      return arrayMatcher;
+    }
+    const isState = isObject(glob) && glob.tokens && glob.input;
+    if (glob === "" || typeof glob !== "string" && !isState) {
+      throw new TypeError("Expected pattern to be a non-empty string");
+    }
+    const opts = options || {};
+    const posix = opts.windows;
+    const regex = isState ? picomatch.compileRe(glob, options) : picomatch.makeRe(glob, options, false, true);
+    const state = regex.state;
+    delete regex.state;
+    let isIgnored = () => false;
+    if (opts.ignore) {
+      const ignoreOpts = { ...options, ignore: null, onMatch: null, onResult: null };
+      isIgnored = picomatch(opts.ignore, ignoreOpts, returnState);
+    }
+    const matcher = (input, returnObject = false) => {
+      const { isMatch, match, output } = picomatch.test(input, regex, options, { glob, posix });
+      const result = { glob, state, regex, posix, input, output, match, isMatch };
+      if (typeof opts.onResult === "function") {
+        opts.onResult(result);
+      }
+      if (isMatch === false) {
+        result.isMatch = false;
+        return returnObject ? result : false;
+      }
+      if (isIgnored(input)) {
+        if (typeof opts.onIgnore === "function") {
+          opts.onIgnore(result);
+        }
+        result.isMatch = false;
+        return returnObject ? result : false;
+      }
+      if (typeof opts.onMatch === "function") {
+        opts.onMatch(result);
+      }
+      return returnObject ? result : true;
+    };
+    if (returnState) {
+      matcher.state = state;
+    }
+    return matcher;
+  };
+  picomatch.test = (input, regex, options, { glob, posix } = {}) => {
+    if (typeof input !== "string") {
+      throw new TypeError("Expected input to be a string");
+    }
+    if (input === "") {
+      return { isMatch: false, output: "" };
+    }
+    const opts = options || {};
+    const format = opts.format || (posix ? utils.toPosixSlashes : null);
+    let match = input === glob;
+    let output = match && format ? format(input) : input;
+    if (match === false) {
+      output = format ? format(input) : input;
+      match = output === glob;
+    }
+    if (match === false || opts.capture === true) {
+      if (opts.matchBase === true || opts.basename === true) {
+        match = picomatch.matchBase(input, regex, options, posix);
+      } else {
+        match = regex.exec(output);
+      }
+    }
+    return { isMatch: Boolean(match), match, output };
+  };
+  picomatch.matchBase = (input, glob, options) => {
+    const regex = glob instanceof RegExp ? glob : picomatch.makeRe(glob, options);
+    return regex.test(utils.basename(input));
+  };
+  picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str);
+  picomatch.parse = (pattern, options) => {
+    if (Array.isArray(pattern))
+      return pattern.map((p) => picomatch.parse(p, options));
+    return parse(pattern, { ...options, fastpaths: false });
+  };
+  picomatch.scan = (input, options) => scan(input, options);
+  picomatch.compileRe = (state, options, returnOutput = false, returnState = false) => {
+    if (returnOutput === true) {
+      return state.output;
+    }
+    const opts = options || {};
+    const prepend = opts.contains ? "" : "^";
+    const append = opts.contains ? "" : "$";
+    let source = `${prepend}(?:${state.output})${append}`;
+    if (state && state.negated === true) {
+      source = `^(?!${source}).*$`;
+    }
+    const regex = picomatch.toRegex(source, options);
+    if (returnState === true) {
+      regex.state = state;
+    }
+    return regex;
+  };
+  picomatch.makeRe = (input, options = {}, returnOutput = false, returnState = false) => {
+    if (!input || typeof input !== "string") {
+      throw new TypeError("Expected a non-empty string");
+    }
+    let parsed = { negated: false, fastpaths: true };
+    if (options.fastpaths !== false && (input[0] === "." || input[0] === "*")) {
+      parsed.output = parse.fastpaths(input, options);
+    }
+    if (!parsed.output) {
+      parsed = parse(input, options);
+    }
+    return picomatch.compileRe(parsed, options, returnOutput, returnState);
+  };
+  picomatch.toRegex = (source, options) => {
+    try {
+      const opts = options || {};
+      return new RegExp(source, opts.flags || (opts.nocase ? "i" : ""));
+    } catch (err) {
+      if (options && options.debug === true)
+        throw err;
+      return /$^/;
+    }
+  };
+  picomatch.constants = constants;
+  module.exports = picomatch;
+});
+
+// node_modules/picomatch/index.js
+var require_picomatch2 = __commonJS((exports, module) => {
+  var pico = require_picomatch();
+  var utils = require_utils();
+  function picomatch(glob, options, returnState = false) {
+    if (options && (options.windows === null || options.windows === undefined)) {
+      options = { ...options, windows: utils.isWindows() };
+    }
+    return pico(glob, options, returnState);
+  }
+  Object.assign(picomatch, pico);
+  module.exports = picomatch;
+});
+
+// node_modules/@rollup/pluginutils/dist/es/index.js
+import { extname, win32, posix, isAbsolute, resolve } from "path";
+var import_picomatch = __toESM(require_picomatch2(), 1);
+function isArray(arg) {
+  return Array.isArray(arg);
+}
+function ensureArray(thing) {
+  if (isArray(thing))
+    return thing;
+  if (thing == null)
+    return [];
+  return [thing];
+}
+var normalizePathRegExp = new RegExp(`\\${win32.sep}`, "g");
+var normalizePath = function normalizePath2(filename) {
+  return filename.replace(normalizePathRegExp, posix.sep);
+};
+function getMatcherString(id, resolutionBase) {
+  if (resolutionBase === false || isAbsolute(id) || id.startsWith("**")) {
+    return normalizePath(id);
+  }
+  const basePath = normalizePath(resolve(resolutionBase || "")).replace(/[-^$*+?.()|[\]{}]/g, "\\$&");
+  return posix.join(basePath, normalizePath(id));
+}
+var createFilter = function createFilter2(include, exclude, options) {
+  const resolutionBase = options && options.resolve;
+  const getMatcher = (id) => id instanceof RegExp ? id : {
+    test: (what) => {
+      const pattern = getMatcherString(id, resolutionBase);
+      const fn = import_picomatch.default(pattern, { dot: true });
+      const result = fn(what);
+      return result;
+    }
+  };
+  const includeMatchers = ensureArray(include).map(getMatcher);
+  const excludeMatchers = ensureArray(exclude).map(getMatcher);
+  if (!includeMatchers.length && !excludeMatchers.length)
+    return (id) => typeof id === "string" && !id.includes("\x00");
+  return function result(id) {
+    if (typeof id !== "string")
+      return false;
+    if (id.includes("\x00"))
+      return false;
+    const pathId = normalizePath(id);
+    for (let i = 0;i < excludeMatchers.length; ++i) {
+      const matcher = excludeMatchers[i];
+      if (matcher instanceof RegExp) {
+        matcher.lastIndex = 0;
+      }
+      if (matcher.test(pathId))
+        return false;
+    }
+    for (let i = 0;i < includeMatchers.length; ++i) {
+      const matcher = includeMatchers[i];
+      if (matcher instanceof RegExp) {
+        matcher.lastIndex = 0;
+      }
+      if (matcher.test(pathId))
+        return true;
+    }
+    return !includeMatchers.length;
+  };
+};
+var reservedWords = "break case class catch const continue debugger default delete do else export extends finally for function if import in instanceof let new return super switch this throw try typeof var void while with yield enum await implements package protected static interface private public";
+var builtins = "arguments Infinity NaN undefined null true false eval uneval isFinite isNaN parseFloat parseInt decodeURI decodeURIComponent encodeURI encodeURIComponent escape unescape Object Function Boolean Symbol Error EvalError InternalError RangeError ReferenceError SyntaxError TypeError URIError Number Math Date String RegExp Array Int8Array Uint8Array Uint8ClampedArray Int16Array Uint16Array Int32Array Uint32Array Float32Array Float64Array Map Set WeakMap WeakSet SIMD ArrayBuffer DataView JSON Promise Generator GeneratorFunction Reflect Proxy Intl";
+var forbiddenIdentifiers = new Set(`${reservedWords} ${builtins}`.split(" "));
+forbiddenIdentifiers.add("");
+var hasStringIsWellFormed = "isWellFormed" in String.prototype;
+
+// src/utils.ts
+var pluginName = "[vite-plugin-iconify] ";
+function parseAttributes(attributesString) {
+  const attributes = {};
+  const regex = /([:@]?\w[\w-]*)="([^"]*)"/g;
+  let match = regex.exec(attributesString);
+  while (match !== null) {
+    attributes[match[1]] = match[2];
+    match = regex.exec(attributesString);
+  }
+  return attributes;
+}
+function buildSvgUrl(prefix, name, attributes) {
+  const baseUrl = `https://api.iconify.design/${prefix}/${name}.svg`;
+  const params = new URLSearchParams;
+  if (attributes.width)
+    params.set("width", attributes.width);
+  if (attributes.height)
+    params.set("height", attributes.height);
+  if (attributes.color)
+    params.set("color", attributes.color);
+  if (attributes.flip)
+    params.set("flip", attributes.flip);
+  const query = params.toString();
+  return `${baseUrl}?${query}`;
+}
+async function fetchSvg(url) {
+  console.log(`${pluginName}fetching svg: ${url}`);
+  try {
+    const response = await fetch(url);
+    if (!response.ok)
+      throw new Error(`HTTP ${response.status}`);
+    const svg = await response.text();
+    return svg;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`${pluginName}Failed to fetch SVG: ${message}`);
+  }
+}
+
+// src/transform_react.ts
+var pluginName2 = "[vite-plugin-iconify] ";
+async function transformReact(code, id) {
+  const iconRegex = /<Icon\s+([^>]*?)\/>/g;
+  const matches = [...code.matchAll(iconRegex)];
+  if (!matches.length)
+    return;
+  let transformedCode = code;
+  for (const match of matches) {
+    const fullMatch = match[0];
+    const attributes = parseReactAttributes(match[1]);
+    if (!attributes.icon) {
+      console.warn(`${pluginName2}Missing 'icon' attribute in <Icon />.`);
+      continue;
+    }
+    const [prefix, name] = attributes.icon.split(":");
+    if (!prefix || !name) {
+      console.warn(`${pluginName2}Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
+      continue;
+    }
+    const svgUrl = buildSvgUrl(prefix, name, attributes);
+    const svgContent = await fetchSvg(svgUrl);
+    if (!svgContent) {
+      console.warn(`${pluginName2}Failed to fetch SVG for "${attributes.icon}".`);
+      continue;
+    }
+    const filteredAttributes = Object.entries(attributes).filter(([key]) => !["icon", "width", "height", "color", "flip"].includes(key)).map(([key, value]) => `${key}={${JSON.stringify(value)}}`).join(" ");
+    const svg = svgContent.replace("<svg", `<svg ${filteredAttributes}`);
+    transformedCode = transformedCode.replace(fullMatch, svg);
+  }
+  return transformedCode;
+}
+function parseReactAttributes(attributesString) {
+  const attributes = {};
+  const regex = /(\w[\w-]*)={"([^}]*)"}/g;
+  let match;
+  while ((match = regex.exec(attributesString)) !== null) {
+    attributes[match[1]] = match[2];
+  }
+  return attributes;
+}
+
+// src/index.ts
+var pluginName3 = "[vite-plugin-iconify] ";
+function IconifySfcPlugin() {
+  const filter = createFilter(["**/*.vue"]);
+  const reactFilter = createFilter(["**/*.jsx", "**/*.tsx"]);
+  return {
+    name: "vite-plugin-iconify",
+    enforce: "pre",
+    async transform(code, id) {
+      if (!reactFilter(id)) {
+        return transformReact(code, id);
+      }
+      if (!filter(id))
+        return;
+      const iconRegex = /<Icon\s+([^>]*?)\/>/g;
+      const matches = [...code.matchAll(iconRegex)];
+      if (!matches.length)
+        return;
+      let transformedCode = code;
+      for (const match of matches) {
+        const fullMatch = match[0];
+        const attributes = parseAttributes(match[1]);
+        if (!attributes.icon) {
+          console.warn(`${pluginName3}Missing 'icon' attribute in <Icon />.`);
+          continue;
+        }
+        const [prefix, name] = attributes.icon.split(":");
+        if (!prefix || !name) {
+          console.warn(`${pluginName3}Invalid 'icon' format in <Icon />: "${attributes.icon}".`);
+          continue;
+        }
+        const svgUrl = buildSvgUrl(prefix, name, attributes);
+        const svgContent = await fetchSvg(svgUrl);
+        if (!svgContent) {
+          console.warn(`${pluginName3}Failed to fetch SVG for "${attributes.icon}".`);
+          continue;
+        }
+        const filteredAttributes = Object.entries(attributes).filter(([key]) => !["icon", "width", "height", "color", "flip"].includes(key)).map(([key, value]) => `${key}="${value ?? ""}"`).join(" ");
+        const svg = svgContent.replace("<svg", `<svg ${filteredAttributes}`);
+        transformedCode = transformedCode.replace(fullMatch, svg);
+      }
+      return transformedCode;
+    }
+  };
+}
+export {
+  IconifySfcPlugin as default
+};
