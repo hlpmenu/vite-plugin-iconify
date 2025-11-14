@@ -1623,7 +1623,7 @@ function IconifySfcPlugin() {
     name: "vite-plugin-iconify",
     enforce: "pre",
     async transform(code, id) {
-      if (!reactFilter(id)) {
+      if (reactFilter(id)) {
         return transformReact(code, id);
       }
       if (!filter(id))
@@ -1638,6 +1638,7 @@ function IconifySfcPlugin() {
         const attributes = parseAttributes(match[1]);
         if (!attributes.icon) {
           console.warn(`${pluginName3}Missing 'icon' attribute in <Icon />.`);
+          console.log("attributes", attributes);
           continue;
         }
         const [prefix, name] = attributes.icon.split(":");
