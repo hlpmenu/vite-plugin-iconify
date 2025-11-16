@@ -1,4 +1,4 @@
-import { rm } from "node:fs/promises";
+import { rm, cp } from "node:fs/promises";
 import { $ } from "bun";
 
 const build = async () => {
@@ -12,29 +12,20 @@ const build = async () => {
 		console.error(e);
 		process.exit(1);
 	}
+
 	try {
-		const res = await Bun.build({
-			entrypoints,
-			outdir,
-			format: "esm",
-			target: "node",
-			minify: true,
-			sourcemap: true,
-			external: ["@vue/compiler-sfc"],
-		});
-		if (res.outputs.length === 0) {
-			throw new Error("No output files generated.");
-		}
+		// Generate declaration files only using tsgo (use tsconfig includes)
+		await $`bunx --bun tsgo --outDir ${outdir}`;
 	} catch (e) {
+		await rm("dist", { recursive: true, force: true });
 		console.error(e);
 		process.exit(1);
 	}
-	console.log("Build complete.");
-	console.log("Building types...");
+	console.log("Copying package.json...");
 	try {
-		// Generate declaration files only using tsgo (use tsconfig includes)
-		await $`bunx --bun tsgo --declaration --emitDeclarationOnly --outDir ${outdir}`;
+		await cp("package.npm.json", "dist/package.json", { force: true });
 	} catch (e) {
+		await rm("dist", { recursive: true, force: true });
 		console.error(e);
 		process.exit(1);
 	}
