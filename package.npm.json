@@ -1,0 +1,42 @@
+{
+	"name": "vite-plugin-iconify",
+	"version": "0.1.0",
+	"description": "A vite plugin to statically inline iconify icons in Vue and React components.",
+	"type": "module",
+
+	"main": "./index.js",
+	"exports": {
+		".": "./index.js"
+	},
+	"types": "./index.d.ts",
+
+	"sideEffects": false,
+
+	"dependencies": {
+		"@vue/compiler-sfc": "^3.4.0"
+	},
+
+	"author": {
+		"name": "hlmpn.dev",
+		"email": "oli@hlmpn.dev",
+		"url": "https:/hlmpn.dev/git/en"
+	},
+
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hlpmenu/vite-plugin-iconify.git"
+	},
+
+	"bugs": {
+		"url": "https://github.com/hlpmenu/vite-plugin-iconify/issues"
+	},
+
+	"homepage": "https://github.com/hlpmenu/vite-plugin-iconify#readme",
+
+	"keywords": ["vite", "vite-plugin", "vue", "vue3", "icon", "iconify"],
+
+	"license": "MIT",
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}
