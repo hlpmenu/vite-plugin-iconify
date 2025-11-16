@@ -10,19 +10,53 @@ type IconBindingResult =
 	| { type: "conditional"; condition: string; icons: [string, string] };
 
 /**
+ * Remove outermost wrapping parentheses when they wrap the entire expression,
+ * e.g. "(a ? 'x' : 'y')" -> "a ? 'x' : 'y'"
+ *       "('mdi:github')" -> "'mdi:github'"
+ */
+function stripOuterParens(expr: string): string {
+	let s = expr.trim();
+
+	const isWrappedOnce = (str: string): boolean => {
+		if (!str.startsWith("(") || !str.endsWith(")")) return false;
+		let depth = 0;
+		for (let i = 0; i < str.length; i++) {
+			const ch = str[i];
+			if (ch === "(") depth++;
+			else if (ch === ")") depth--;
+
+			// if we close the outermost paren before the last char,
+			// it's not a single wrapping pair
+			if (depth === 0 && i < str.length - 1) return false;
+			if (depth < 0) return false;
+		}
+		return depth === 0;
+	};
+
+	while (s.startsWith("(") && s.endsWith(")") && isWrappedOnce(s)) {
+		s = s.slice(1, -1).trim();
+	}
+
+	return s;
+}
+
+/**
  * Parse a :icon / v-bind:icon expression into something we can statically handle.
  *
  * Supports:
  *   :icon="'mdi:github'"
  *   :icon="\"mdi:github\""
  *   :icon="a ? 'mdi:github' : 'mdi:github-face'"
+ *   :icon="('mdi:github')"
+ *   :icon="(a ? 'mdi:github' : 'mdi:github-face')"
  */
 function parseIconBinding(
 	bindingExpr: string | undefined,
 ): IconBindingResult | null {
 	if (!bindingExpr) return null;
 
-	const expr = bindingExpr.trim();
+	// strip any outer wrapping parentheses first
+	const expr = stripOuterParens(bindingExpr);
 
 	// 1) Simple literal: `'mdi:github'` or `"mdi:github"`
 	const literalMatch = expr.match(/^(['"`])([^'"`]+)\1$/);
@@ -31,11 +65,13 @@ function parseIconBinding(
 	}
 
 	// 2) Simple ternary: `condition ? 'mdi:a' : 'mdi:b'`
-	//    We intentionally support a fairly narrow pattern here.
 	const ternaryMatch = expr.match(/^(.*?)\?(.*)$/);
 	if (ternaryMatch) {
-		const condition = ternaryMatch[1].trim();
-		const rest = ternaryMatch[2];
+		let condition = ternaryMatch[1].trim();
+		let rest = ternaryMatch[2];
+
+		// also allow the whole ternary part to be wrapped in parens
+		rest = stripOuterParens(rest);
 
 		const branchesMatch = rest.match(
 			/^\s*(['"`])([^'"`]+)\1\s*:\s*(['"`])([^'"`]+)\3\s*$/,
@@ -65,7 +101,7 @@ export default function IconifySfcPlugin(): Plugin {
 
 	return {
 		name: "vite-plugin-iconify",
-		enforce: "pre", // Ensure this plugin runs before the Vue plugin
+		enforce: "pre",
 
 		async transform(code: string, id: string): Promise<string | void> {
 			if (reactFilter(id)) {
@@ -83,29 +119,24 @@ export default function IconifySfcPlugin(): Plugin {
 				const fullMatch = match[0];
 				const attributes = parseAttributes(match[1]);
 
-				// --- figure out what kind of icon binding we have ---
-
 				let bindingResult: IconBindingResult | null = null;
 
 				if (attributes.icon) {
-					// plain icon="mdi:github"
 					bindingResult = {
 						type: "single",
 						icon: attributes.icon,
 					};
 				} else {
-					// bound :icon / v-bind:icon
 					const boundExpr =
 						attributes[":icon"] ?? attributes["v-bind:icon"] ?? undefined;
 					bindingResult = parseIconBinding(boundExpr);
 				}
 
 				if (!bindingResult) {
-					// No usable static info → leave <Icon /> for runtime handling
+					// leave <Icon> as-is → runtime will handle
 					continue;
 				}
 
-				// These attrs should not be copied to <svg>
 				const iconSpecificKeys = new Set([
 					"icon",
 					":icon",
@@ -122,7 +153,6 @@ export default function IconifySfcPlugin(): Plugin {
 					.join(" ");
 
 				const addAttrsToSvg = (svgContent: string, extra?: string) => {
-					// insert our attrs right after <svg
 					let svg = svgContent;
 
 					const attrsParts = [
@@ -137,8 +167,6 @@ export default function IconifySfcPlugin(): Plugin {
 					const attrsString = " " + attrsParts.join(" ");
 					return svg.replace("<svg", `<svg${attrsString}`);
 				};
-
-				// --- handle the single-icon vs conditional cases ---
 
 				if (bindingResult.type === "single") {
 					const iconValue = bindingResult.icon;
@@ -171,12 +199,10 @@ export default function IconifySfcPlugin(): Plugin {
 					const [icon1, icon2] = bindingResult.icons;
 					const condition = bindingResult.condition;
 
-					// icon1
 					const [p1Raw, n1Raw] = icon1.split(":");
 					const prefix1 = p1Raw?.replaceAll(`'`, "").replaceAll(`"`, "");
 					const name1 = n1Raw?.replaceAll(`'`, "").replaceAll(`"`, "");
 
-					// icon2
 					const [p2Raw, n2Raw] = icon2.split(":");
 					const prefix2 = p2Raw?.replaceAll(`'`, "").replaceAll(`"`, "");
 					const name2 = n2Raw?.replaceAll(`'`, "").replaceAll(`"`, "");
@@ -200,7 +226,6 @@ export default function IconifySfcPlugin(): Plugin {
 						continue;
 					}
 
-					// Attach attrs + v-if / v-else directly on the SVGs
 					const svg1 = addAttrsToSvg(svgContent1, `v-if="${condition}"`);
 					const svg2 = addAttrsToSvg(svgContent2, "v-else");
 
