@@ -9,8 +9,8 @@ const pluginName = "[vite-plugin-iconify] ";
  */
 export default async function transformReact(
 	code: string,
-	id: string,
-): Promise<string | void> {
+	_id: string,
+): Promise<string | undefined> {
 	const iconRegex = /<Icon\s+([^>]*?)\/>/g;
 	const matches = [...code.matchAll(iconRegex)];
 	if (!matches.length) return;
@@ -63,12 +63,14 @@ export default async function transformReact(
  * Parse attributes from the <Icon /> tag in React components.
  * @param attributesString Raw attributes string from the match.
  */
-function parseReactAttributes(attributesString: string): IconAttributes {
+const parseReactAttributes = (attributesString: string): IconAttributes => {
 	const attributes: IconAttributes = {};
 	const regex = /(\w[\w-]*)={"([^}]*)"}/g;
 	let match: RegExpExecArray | null;
-	while ((match = regex.exec(attributesString)) !== null) {
+	while (true) {
+		match = regex.exec(attributesString);
+		if (match === null) break;
 		attributes[match[1]] = match[2];
 	}
 	return attributes;
-}
+};

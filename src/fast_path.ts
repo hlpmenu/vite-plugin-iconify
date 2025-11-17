@@ -1,8 +1,4 @@
 import type { IconBindingResult } from "./types";
-
-/** -------------------------------------------------------------------------
- *  Parentheses stripping (already in your previous step)
- *  ------------------------------------------------------------------------- */
 const stripOuterParens = (expr: string): string => {
 	let s = expr.trim();
 
@@ -25,10 +21,6 @@ const stripOuterParens = (expr: string): string => {
 
 	return s;
 };
-
-/** -------------------------------------------------------------------------
- *  Fast-path parser: literal & simple ternary (your existing behavior)
- *  ------------------------------------------------------------------------- */
 const parseIconBinding = (
 	bindingExpr: string | undefined,
 ): IconBindingResult | null => {

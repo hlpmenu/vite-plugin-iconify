@@ -1,6 +1,8 @@
 import * as parser from "@babel/parser";
 import traverse from "./traverse_shim";
 import type * as traverseTypes from "babel__traverse"; // @ts-ignore
+import type * as t from "@babel/types";
+
 const code = `function square(n) {
   return n * n;
 }`;

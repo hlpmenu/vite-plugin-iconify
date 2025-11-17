@@ -9,14 +9,15 @@ import type { IconBindingResult } from "./types";
 const pluginName = "[vite-plugin-iconify] ";
 
 const IconifySfcPlugin = (): Plugin => {
-	const filter = createFilter(["**/*.vue"]);
-	const reactFilter = createFilter(["**/*.jsx", "**/*.tsx"]);
-
 	return {
 		name: "vite-plugin-iconify",
+		//apply: "build",
 		enforce: "pre",
 
 		async transform(code: string, id: string): Promise<string | void> {
+			const filter = createFilter(["**/*.vue"]);
+			const reactFilter = createFilter(["**/*.jsx", "**/*.tsx"]);
+
 			if (reactFilter(id)) {
 				return transformReact(code, id);
 			}

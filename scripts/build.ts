@@ -14,8 +14,27 @@ const build = async () => {
 	}
 
 	try {
+		// Build the project
+		const res = await Bun.build({
+			entrypoints,
+			outdir,
+			minify: true,
+			tsconfig: "./tsconfig.json",
+			sourcemap: true,
+			target: "node",
+			external: ["@babel/*", "@vue/*"],
+		});
+		if (!res || res.outputs.length <= 0 || !res.success) {
+			throw new Error(`Failed to build project: ${res?.logs?.join("\n")}`);
+		}
+	} catch (e) {
+		await rm("dist", { recursive: true, force: true });
+		console.error(e);
+	}
+
+	try {
 		// Generate declaration files only using tsgo (use tsconfig includes)
-		await $`bunx --bun tsgo --outDir ${outdir}`;
+		await $`bunx --bun tsgo --declaration --emitDeclarationOnly --outDir ${outdir}`;
 	} catch (e) {
 		await rm("dist", { recursive: true, force: true });
 		console.error(e);
