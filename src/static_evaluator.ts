@@ -8,7 +8,36 @@ import traverse from "./traverse_shim";
 import type * as traverseTypes from "babel__traverse"; // @ts-ignore
 import * as t from "@babel/types";
 import { readFile } from "node:fs/promises";
-import type { EvalVal, ImportBinding, LocalEnv, ModuleEnv } from "./types";
+// import type { EvalVal, ImportBinding, LocalEnv, ModuleEnv } from "./types";
+
+// --- EXTENDED TYPES (Inlined for immediate testing) ---
+export type EvalVal =
+	| { kind: "string"; value: string }
+	| { kind: "boolean"; value: boolean }
+	| { kind: "number"; value: number }
+	| { kind: "null" }
+	| { kind: "undefined" }
+	| { kind: "array"; values: EvalVal[] }
+	| { kind: "object"; values: Record<string, EvalVal> }
+	| { kind: "unknown" };
+
+export interface ImportBinding {
+	local: string;
+	imported: string;
+	source: string;
+}
+
+export interface LocalEnv {
+	constDecls: Map<string, t.Expression>;
+	imports: Map<string, ImportBinding>;
+}
+
+export interface ModuleEnv {
+	constDecls: Map<string, t.Expression>;
+	exports: Map<string, t.Expression>;
+	defaultExport?: t.Expression;
+}
+// ------------------------------------------------------
 
 const BABEL_PLUGINS: any[] = [
 	"typescript",
@@ -146,17 +175,13 @@ const collectModuleEnvFromCode = (code: string): ModuleEnv => {
 	return { constDecls, exports, defaultExport };
 };
 
+// --- HELPERS ---
 const STR = (v: string): EvalVal => ({ kind: "string", value: v });
 const BOOL = (v: boolean): EvalVal => ({ kind: "boolean", value: v });
+const NUM = (v: number): EvalVal => ({ kind: "number", value: v });
+const NULL: EvalVal = { kind: "null" };
+const UNDEF: EvalVal = { kind: "undefined" };
 const UNKNOWN: EvalVal = { kind: "unknown" };
-
-const isStringVal = (v: EvalVal): v is { kind: "string"; value: string } =>
-	v.kind === "string";
-const isBoolVal = (v: EvalVal): v is { kind: "boolean"; value: boolean } =>
-	v.kind === "boolean";
-
-const isStringyLiteral = (expr: t.Expression): boolean =>
-	t.isStringLiteral(expr) || t.isTemplateLiteral(expr);
 
 const createStaticResolver = async (
 	code: string,
@@ -191,7 +216,7 @@ const createStaticResolver = async (
 	};
 
 	const evalInModule = async (
-		node: t.Expression,
+		node: t.Expression | t.SpreadElement | null,
 		modEnv: ModuleEnv,
 	): Promise<EvalVal> => {
 		const evalIdInModule = async (name: string): Promise<EvalVal> => {
@@ -202,36 +227,199 @@ const createStaticResolver = async (
 			return UNKNOWN;
 		};
 
-		const evalNode = async (n: t.Expression): Promise<EvalVal> => {
+		const evalNode = async (
+			n: t.Expression | t.SpreadElement | null,
+		): Promise<EvalVal> => {
+			if (!n) return UNDEF;
+
+			// 1. Wrappers
 			if (t.isTSAsExpression(n)) return evalNode(n.expression);
 			if (t.isParenthesizedExpression(n)) return evalNode(n.expression);
 
+			// 2. Primitives
 			if (t.isStringLiteral(n)) return STR(n.value);
+			if (t.isBooleanLiteral(n)) return BOOL(n.value);
+			if (t.isNumericLiteral(n)) return NUM(n.value);
+			if (t.isNullLiteral(n)) return NULL;
+			if (t.isIdentifier(n)) {
+				if (n.name === "undefined") return UNDEF;
+				return evalIdInModule(n.name);
+			}
 
+			// 3. Template Literals
 			if (t.isTemplateLiteral(n)) {
 				let out = "";
 				for (let i = 0; i < n.quasis.length; i++) {
 					out += n.quasis[i].value.cooked ?? n.quasis[i].value.raw;
 					if (i < n.expressions.length) {
 						const v = await evalNode(n.expressions[i] as t.Expression);
-						if (!isStringVal(v)) return UNKNOWN;
+						if (v.kind !== "string") return UNKNOWN;
 						out += v.value;
 					}
 				}
 				return STR(out);
 			}
 
+			// 4. Binary Expression (+)
 			if (t.isBinaryExpression(n) && n.operator === "+") {
 				const l = await evalNode(n.left as t.Expression);
 				const r = await evalNode(n.right as t.Expression);
-				if (isStringVal(l) && isStringVal(r)) return STR(l.value + r.value);
+				if (l.kind === "string" && r.kind === "string")
+					return STR(l.value + r.value);
 				return UNKNOWN;
 			}
 
-			if (t.isBooleanLiteral(n)) return BOOL(n.value);
+			// 5. Logical Expressions (?? and ||)
+			if (t.isLogicalExpression(n)) {
+				const left = await evalNode(n.left as t.Expression);
 
-			if (t.isIdentifier(n)) {
-				return evalIdInModule(n.name);
+				if (n.operator === "??") {
+					if (
+						left.kind !== "null" &&
+						left.kind !== "undefined" &&
+						left.kind !== "unknown"
+					)
+						return left;
+					if (left.kind === "unknown") return UNKNOWN;
+				}
+
+				if (n.operator === "||") {
+					const isTruthy =
+						(left.kind === "string" && left.value !== "") ||
+						(left.kind === "boolean" && left.value) ||
+						(left.kind === "number" && left.value !== 0);
+					if (isTruthy) return left;
+					if (left.kind === "unknown") return UNKNOWN;
+				}
+
+				return evalNode(n.right as t.Expression);
+			}
+
+			// 6. Arrays
+			if (t.isArrayExpression(n)) {
+				const values: EvalVal[] = [];
+				for (const el of n.elements) {
+					if (!el) continue; // sparse
+					if (t.isSpreadElement(el)) return UNKNOWN;
+					values.push(await evalNode(el as t.Expression));
+				}
+				return { kind: "array", values };
+			}
+
+			// 7. Objects
+			if (t.isObjectExpression(n)) {
+				const values: Record<string, EvalVal> = {};
+				for (const prop of n.properties) {
+					if (t.isObjectProperty(prop)) {
+						let key: string | null = null;
+						if (t.isIdentifier(prop.key) && !prop.computed) key = prop.key.name;
+						else if (t.isStringLiteral(prop.key)) key = prop.key.value;
+
+						if (key && t.isExpression(prop.value)) {
+							values[key] = await evalNode(prop.value);
+						}
+					} else {
+						return UNKNOWN; // spread or method
+					}
+				}
+				return { kind: "object", values };
+			}
+
+			// 8. Member Access (obj.key, arr[0])
+			if (t.isMemberExpression(n)) {
+				const obj = await evalNode(n.object as t.Expression);
+
+				let key: string | number | null = null;
+				if (n.computed) {
+					const k = await evalNode(n.property as t.Expression);
+					if (k.kind === "string") key = k.value;
+					if (k.kind === "number") key = k.value;
+				} else if (t.isIdentifier(n.property)) {
+					key = n.property.name;
+				}
+
+				if (obj.kind === "object" && typeof key === "string") {
+					return obj.values[key] ?? UNDEF;
+				}
+				if (obj.kind === "array" && typeof key === "number") {
+					return obj.values[key] ?? UNDEF;
+				}
+				return UNKNOWN;
+			}
+
+			// 9. Call Expressions (Functions, Methods, Refs)
+			if (t.isCallExpression(n)) {
+				// A. Function Calls (Ref, Computed, or Local Functions)
+				if (t.isIdentifier(n.callee)) {
+					const name = n.callee.name;
+
+					// Built-in Vue helpers
+					if (
+						["ref", "computed", "unref", "readonly"].includes(name) &&
+						n.arguments.length > 0
+					) {
+						const arg = n.arguments[0];
+						// Unwrap arrow function in computed(() => ...)
+						if (t.isArrowFunctionExpression(arg) && t.isExpression(arg.body)) {
+							return evalNode(arg.body);
+						}
+						if (t.isExpression(arg)) return evalNode(arg);
+					}
+
+					// Local Function Call (Simple 0-arg const functions)
+					const decl = modEnv.constDecls.get(name);
+					if (
+						decl &&
+						(t.isArrowFunctionExpression(decl) || t.isFunctionExpression(decl))
+					) {
+						if (decl.params.length === 0) {
+							if (t.isBlockStatement(decl.body)) {
+								const ret = decl.body.body.find((s) =>
+									t.isReturnStatement(s),
+								) as t.ReturnStatement;
+								if (ret && ret.argument) return evalNode(ret.argument);
+							} else if (t.isExpression(decl.body)) {
+								return evalNode(decl.body);
+							}
+						}
+					}
+				}
+
+				// B. Member Method Calls (.trim, .split, etc)
+				if (t.isMemberExpression(n.callee)) {
+					const obj = await evalNode(n.callee.object as t.Expression);
+					const prop = n.callee.property;
+
+					if (obj.kind === "string" && t.isIdentifier(prop)) {
+						if (prop.name === "trim") return STR(obj.value.trim());
+						if (prop.name === "toLowerCase") return STR(obj.value.toLowerCase());
+						if (prop.name === "toUpperCase") return STR(obj.value.toUpperCase());
+						if (prop.name === "split") {
+							const sepArg = n.arguments[0];
+							if (sepArg && t.isStringLiteral(sepArg)) {
+								const parts = obj.value.split(sepArg.value).map(STR);
+								return { kind: "array", values: parts };
+							}
+						}
+					}
+				}
+			}
+
+			// 10. Conditional (Ternary)
+			if (t.isConditionalExpression(n)) {
+				const cond = await evalNode(n.test as t.Expression);
+				const c = await evalNode(n.consequent as t.Expression);
+				const a = await evalNode(n.alternate as t.Expression);
+
+				let isTrue = false;
+				if (cond.kind === "boolean") isTrue = cond.value;
+				else if (cond.kind === "string") isTrue = cond.value.length > 0;
+				else if (cond.kind === "number") isTrue = cond.value !== 0;
+				else if (cond.kind === "null" || cond.kind === "undefined")
+					isTrue = false;
+				else return UNKNOWN;
+
+				return isTrue ? c : a;
 			}
 
 			return UNKNOWN;
@@ -245,7 +433,8 @@ const createStaticResolver = async (
 
 		const local = localEnv.constDecls.get(name);
 		if (local) {
-			const v = await evalNode(local);
+			// We pass localEnv here because we are in the same file
+			const v = await evalInModule(local, localEnv);
 			idValueCache.set(name, v);
 			return v;
 		}
@@ -276,86 +465,6 @@ const createStaticResolver = async (
 		return UNKNOWN;
 	};
 
-	const evalBool = async (n: t.Expression): Promise<EvalVal> => {
-		if (t.isTSAsExpression(n)) return evalBool(n.expression);
-		if (t.isParenthesizedExpression(n)) return evalBool(n.expression);
-
-		if (t.isBooleanLiteral(n)) return BOOL(n.value);
-		if (t.isIdentifier(n)) {
-			const v = await evalIdentifier(n.name);
-			if (isBoolVal(v)) return v;
-			return UNKNOWN;
-		}
-
-		if (t.isUnaryExpression(n) && n.operator === "!") {
-			const v = await evalBool(n.argument as t.Expression);
-			if (isBoolVal(v)) return BOOL(!v.value);
-			return UNKNOWN;
-		}
-
-		if (t.isLogicalExpression(n)) {
-			const l = await evalBool(n.left as t.Expression);
-			const r = await evalBool(n.right as t.Expression);
-			if (isBoolVal(l) && isBoolVal(r)) {
-				switch (n.operator) {
-					case "&&":
-						return BOOL(l.value && r.value);
-					case "||":
-						return BOOL(l.value || r.value);
-					default:
-						return UNKNOWN;
-				}
-			}
-		}
-
-		return UNKNOWN;
-	};
-
-	const evalNode = async (node: t.Expression): Promise<EvalVal> => {
-		if (t.isTSAsExpression(node)) return evalNode(node.expression);
-		if (t.isParenthesizedExpression(node)) return evalNode(node.expression);
-
-		if (t.isStringLiteral(node)) return STR(node.value);
-
-		if (t.isTemplateLiteral(node)) {
-			let out = "";
-			for (let i = 0; i < node.quasis.length; i++) {
-				out += node.quasis[i].value.cooked ?? node.quasis[i].value.raw;
-				if (i < node.expressions.length) {
-					const v = await evalNode(node.expressions[i] as t.Expression);
-					if (!isStringVal(v)) return UNKNOWN;
-					out += v.value;
-				}
-			}
-			return STR(out);
-		}
-
-		if (t.isBinaryExpression(node) && node.operator === "+") {
-			const l = await evalNode(node.left as t.Expression);
-			const r = await evalNode(node.right as t.Expression);
-			if (isStringVal(l) && isStringVal(r)) return STR(l.value + r.value);
-			return UNKNOWN;
-		}
-
-		if (t.isIdentifier(node)) {
-			return evalIdentifier(node.name);
-		}
-
-		if (t.isConditionalExpression(node)) {
-			const cond = await evalBool(node.test as t.Expression);
-			const c = await evalNode(node.consequent as t.Expression);
-			const a = await evalNode(node.alternate as t.Expression);
-			if (isBoolVal(cond) && isStringVal(c) && isStringVal(a)) {
-				return cond.value ? STR(c.value) : STR(a.value);
-			}
-			return UNKNOWN;
-		}
-
-		if (t.isBooleanLiteral(node)) return BOOL(node.value);
-
-		return UNKNOWN;
-	};
-
 	const resolveToString = async (exprCode: string): Promise<string | null> => {
 		try {
 			const astExpr = parseExpression(exprCode, {
@@ -363,8 +472,10 @@ const createStaticResolver = async (
 				plugins: BABEL_PLUGINS,
 			}) as t.Expression;
 
-			const val = await evalNode(astExpr);
-			if (isStringVal(val)) return val.value;
+			// Evaluate using local environment context
+			const val = await evalInModule(astExpr, localEnv);
+
+			if (val.kind === "string") return val.value;
 			return null;
 		} catch {
 			return null;
