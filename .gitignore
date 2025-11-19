@@ -1,7 +1,39 @@
-tmp
-temp
-node_modules
-dist
-out
+# Dependency directories
+node_modules/
+.pnp/
+.bun/
+
+# Build outputs
+dist/
+out/
+build/
+.output/
 examples/
 tests/
+
+# Temporary caches & artifacts
+tmp/
+temp/
+coverage/
+.turbo/
+.parcel-cache/
+.vercel/
+.netlify/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment & editor files
+.DS_Store
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/

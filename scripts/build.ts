@@ -22,6 +22,8 @@ const build = async () => {
 			tsconfig: "./tsconfig.json",
 			sourcemap: true,
 			target: "node",
+			format: "esm",
+			packages: "bundle",
 			external: ["@babel/*", "@vue/*"],
 		});
 		if (!res || res.outputs.length <= 0 || !res.success) {

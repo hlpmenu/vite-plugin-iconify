@@ -1,12 +1,16 @@
 {
 	"name": "@hlmpn/vite-plugin-iconify",
-	"version": "0.1.0",
+	"version": "2.0.0",
 	"description": "A vite plugin to statically inline iconify icons in Vue and React components.",
 	"type": "module",
 
 	"main": "./index.js",
 
 	"sideEffects": false,
+	"exports": {
+		".": "./index.js",
+		"/nuxt": "./nuxt/module.js"
+	},
 
 	"dependencies": {
 		"@babel/parser": "^7.28.5",

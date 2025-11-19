@@ -2,13 +2,14 @@ import _traverse from "@babel/traverse";
 
 const getTraverse = () => {
 	try {
-		if (isBun()) {
+		if (typeof _traverse === "function") {
 			return _traverse;
 		} else if (
 			typeof _traverse !== "function" &&
 			// @ts-expect-error: runtime interop
 			_traverse?.default && // @ts-ignore
-			typeof _traverse?.default !== "undefined" // @ts-ignore
+			typeof _traverse?.default !== "undefined" // @ts-ignore 
+			&& typeof _traverse?.default === "function"
 		) {
 			// @ts-expect-error: runtime interop
 			return _traverse.default;
