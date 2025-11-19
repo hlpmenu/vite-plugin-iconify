@@ -29,8 +29,10 @@ const parseIconBinding = (
 	const expr = stripOuterParens(bindingExpr);
 
 	// Literal: 'mdi:github' or "mdi:github"
-	const literalMatch = expr.match(/^(['"`])([^'"`]+)\1$/);
+	const literalMatch = expr.match(/^(['"`])((?:(?!\$\{)[^'"`])+)\1$/);
+
 	if (literalMatch) {
+		
 		return { type: "single", icon: literalMatch[2] };
 	}
 
