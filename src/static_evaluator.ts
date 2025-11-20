@@ -8,36 +8,8 @@ import traverse from "./traverse_shim";
 import type * as traverseTypes from "babel__traverse"; // @ts-ignore
 import * as t from "@babel/types";
 import { readFile } from "node:fs/promises";
-// import type { EvalVal, ImportBinding, LocalEnv, ModuleEnv } from "./types";
+import type { EvalVal, ImportBinding, LocalEnv, ModuleEnv } from "./types";
 
-// --- EXTENDED TYPES (Inlined for immediate testing) ---
-export type EvalVal =
-	| { kind: "string"; value: string }
-	| { kind: "boolean"; value: boolean }
-	| { kind: "number"; value: number }
-	| { kind: "null" }
-	| { kind: "undefined" }
-	| { kind: "array"; values: EvalVal[] }
-	| { kind: "object"; values: Record<string, EvalVal> }
-	| { kind: "unknown" };
-
-export interface ImportBinding {
-	local: string;
-	imported: string;
-	source: string;
-}
-
-export interface LocalEnv {
-	constDecls: Map<string, t.Expression>;
-	imports: Map<string, ImportBinding>;
-}
-
-export interface ModuleEnv {
-	constDecls: Map<string, t.Expression>;
-	exports: Map<string, t.Expression>;
-	defaultExport?: t.Expression;
-}
-// ------------------------------------------------------
 
 const BABEL_PLUGINS: any[] = [
 	"typescript",
@@ -217,13 +189,16 @@ const createStaticResolver = async (
 
 	const evalInModule = async (
 		node: t.Expression | t.SpreadElement | null,
-		modEnv: ModuleEnv,
+		modEnv: ModuleEnv | LocalEnv,
 	): Promise<EvalVal> => {
 		const evalIdInModule = async (name: string): Promise<EvalVal> => {
 			const local = modEnv.constDecls.get(name);
 			if (local) return evalNode(local);
-			const exp = modEnv.exports.get(name);
-			if (exp) return evalNode(exp);
+
+			if ("exports" in modEnv) {
+				const exp = modEnv.exports.get(name);
+				if (exp) return evalNode(exp);
+			}
 			return UNKNOWN;
 		};
 

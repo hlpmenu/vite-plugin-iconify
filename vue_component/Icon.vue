@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 const props = defineProps({
   icon: {
@@ -9,10 +9,12 @@ const props = defineProps({
 
 
 
+
+
 </script>
 
 
 <template>
-  <img v-bind="$attrs" v-if="typeof icon === 'string'" :src="`https://api.iconify.design/${icon.replace(':','/')}.svg`"
+  <img v-bind="$attrs" v-if="typeof icon === 'string' && icon" :src="`https://api.iconify.design/${icon.replace(':','/')}.svg`"
     :alt="icon" role="img" />
 </template>

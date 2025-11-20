@@ -1,5 +1,5 @@
 import { defineNuxtModule, addVitePlugin } from "@nuxt/kit";
-import iconifyPlugin from "../../";
+import iconifyPlugin from "@hlmpn/vite-plugin-iconify";
 import type { NuxtModule } from "@nuxt/schema";
 
 const nuxtModule = defineNuxtModule<NuxtModule>({

@@ -8,7 +8,7 @@ import type { IconBindingResult } from "./types";
 
 const pluginName = "[vite-plugin-iconify] ";
 
-const IconifySfcPlugin = (): Plugin => {
+const IconifySfcPlugin = (): Plugin<any> => {
 	return {
 		name: "vite-plugin-iconify",
 		//apply: "build",

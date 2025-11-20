@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "esnext",
     "jsx": "preserve",
     "paths": {
       "*": [ "./*" ],
@@ -8,19 +8,23 @@
     },
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "declaration": true,
+    "esModuleInterop": true,
+    "allowArbitraryExtensions": true,
+    "isolatedModules": true,
+    "removeComments": true,
 
     "resolveJsonModule": true,
     "types": [ "node", "vite/client", "@nuxt/schema" ],
     "allowJs": true,
     "strict": true,
-    "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/module.ts",
   ]
 }
