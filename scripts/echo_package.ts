@@ -56,4 +56,6 @@ const main = async () => {
 }
 
 
-main(); 
+if (import.meta.main) {
+    await main(); 
+} 

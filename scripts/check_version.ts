@@ -17,7 +17,7 @@ const main = async () => {
     } 
 
     const version = process.argv[2];
-    checkVersion(version);
+    await checkVersion(version);
 }
 
 
@@ -29,6 +29,11 @@ const checkVersion = async (input: string) => {
     const data = await res.json();
     const version = data.version;
 
+    if (!version) {
+        console.error(`Failed to fetch version from ${npmRegApiUrl(name)}`);
+        process.exit(1);
+    }
+
     if (Bun.semver.order(input, version) === -1) {
         console.error(`Version mismatch: ${input} is older than ${version}`);
         process.exit(1);
@@ -39,7 +44,7 @@ const checkVersion = async (input: string) => {
 }
 
 if (import.meta.main) {
-    main();
+    await main();
 } 
 
 

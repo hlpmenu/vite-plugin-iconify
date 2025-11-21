@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "../.oxlintrc.json"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "**/*.ts",
+                "**/*.js",
+                "./*.ts"
+            ],
+            "rules": {
+                "no-base-to-string": "off"
+            }
+        }
+    ],
+}

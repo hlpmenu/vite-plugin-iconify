@@ -31,7 +31,7 @@ const runLint = async (
             name,
             status: shell.exitCode === 0 ? 'pass' : 'error',
             exitCode: shell.exitCode,
-            output: await shell.bytes(),
+            output: shell.bytes(),
         };
     } catch (error: unknown) {
         // This block handles cases where the shell command itself cannot be initiated.
@@ -150,7 +150,7 @@ async function main() {
 
     for (const result of results) {
         if (result.output.byteLength > 0) {
-            await stdErrWriter.write(result.output);
+            stdErrWriter.write(result.output);
         }
 
         if (result.status === 'error') {

@@ -1,0 +1,12 @@
+{
+    "ignorePatterns": [
+        "dist/**",
+        "node_modules/**",
+        "test/**",
+        "vue_component/testComponent.ts",
+        "vue_component/dist/**",
+
+
+    ]
+
+}

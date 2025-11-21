@@ -11,13 +11,32 @@ import * as rollup from "rollup";
 import dts from "rollup-plugin-dts";
 import compileComponent from "../vue_component/compile";
 import copyAssets from "./copy_assets";
+import runCommand from "./runCommand";
 
-const isProduction = () => process.env.PRODUCTION ? true : false
+const isProduction = process.env.PRODUCTION ? true : false
 
 
+
+const runChecks = async () => {
+	if (!isProduction) {
+		console.log("Building in development mode");
+		await runCommand("bun run typecheck");
+		await runCommand("bun run lint");
+
+	}
+}
 
 
 const build = async () => {
+
+	try {
+		await runChecks();
+	} catch (e) {
+		console.error(e);
+		process.exit(1);
+	}	
+	
+
 	const entrypoints = ["src/index.ts"];
 	const outdir = "./dist";
 
@@ -36,7 +55,7 @@ const build = async () => {
 			outdir,
 			minify: true,
 			tsconfig: "./tsconfig.json",
-			sourcemap: isProduction() ? false : true,
+			sourcemap: isProduction ? false : true,
 			target: "node",
 			format: "esm",
 			packages: "bundle",
@@ -105,7 +124,7 @@ const build = async () => {
 			format: "es",
 		});
 		if (res.output.length <= 0 || !res.output[0].code) {
-			throw new Error(`Failed to build nuxt module. No output code.`);
+			throw new Error(`Failed to build nuxt module.No output code.`);
 		}
 		
 	} catch (e) {
@@ -138,7 +157,7 @@ const build = async () => {
 	}
 
 	try {
-		copyAssets()
+		await copyAssets()
 	} catch (e) {
 		await rm("dist", { recursive: true, force: true });
 		console.error(e);
@@ -148,4 +167,4 @@ const build = async () => {
 
 };
 
-build();
+await build();
