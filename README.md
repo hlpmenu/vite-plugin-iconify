@@ -1,12 +1,20 @@
-(readme is thrown together in like 1 minute, will be updated)
+[![Build](https://github.com/hlpmenu/vite-plugin-iconify/actions/workflows/build.yml/badge.svg)](https://github.com/hlpmenu/vite-plugin-iconify/actions/workflows/build.yml) [![Lint](https://github.com/hlpmenu/vite-plugin-iconify/actions/workflows/lint.yml/badge.svg)](https://github.com/hlpmenu/vite-plugin-iconify/actions/workflows/lint.yml) [![npm version](https://img.shields.io/npm/v/@hlmpn/vite-plugin-iconify.svg)](https://www.npmjs.com/package/@hlmpn/vite-plugin-iconify) [![npm downloads](https://img.shields.io/npm/dt/@hlmpn/vite-plugin-iconify.svg)](https://www.npmjs.com/package/@hlmpn/vite-plugin-iconify) [![npm registry](https://img.shields.io/badge/npm-registry-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/@hlmpn/vite-plugin-iconify)
 
-# Static icons, with @nuxt/icon api.
+
+# Vite Plugin and Nuxt module for Iconify Icons
 
 - Get the dx benefits of `@nuxt/icon`, 
 - Use any iconify icon, just like @iconify/vue or @nuxt/icon
-- Live updates with dev server just as usual.
+- Live updates with dev server/hmr just as usual.
+
+Mainly for Vue, basic react support exists, but it currently only support static props.
 
 But increase render time and performance in prod, by automatically inlining the icons at build or hmr.
+
+**Coming soon:**
+- Svg optimizations, including deduping, minification, and spritees
+- Options for inlining, or push to a cdn(ex s3,r2,etc)
+- Import wrapper for local or remote assets
 
 ---
 
@@ -32,7 +40,7 @@ yarn add @hlmpn/vite-plugin-iconify --save
 
 ## Currently supported cases for inlining:
 
-Test coverage[test_coverage.md](test_coverage.md)
+[Test coverage](test_coverage.md)
 
 
 ## Adding the plugin to a standard vite project
@@ -104,8 +112,19 @@ You do **not** need to import `@hlmpn/vite-plugin-iconify/vue` in your vue compo
 Usage in any component:
 ```vue
 <template>
-    <IconifyIcon icon="mdi:account" /> // or any combo of use like the vite example showed
+    <Icon icon="mdi:account" /> // or any combo of use like the vite example showed
 </template>
+```
+
+### Nuxt prefix settings
+
+```typescript
+export default defineNuxtConfig({
+    modules: ['@hlmpn/vite-plugin-iconify/nuxt'],  // <-- Add here
+    iconify: {
+        prefix: "Iconify", // <-- Add here if you want to use ex `<IconifyIcon icon="mdi:account" />` instead of Icon
+    },
+})
 ```
 
 

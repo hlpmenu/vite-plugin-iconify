@@ -10,7 +10,7 @@
 	"exports": {
 		".": "./index.js",
 		"./nuxt": "./nuxt/module.js",
-		"./vue": "./vue/component.js"
+		"./vue": "./vue_component/component.js"
 	},
 
 	"dependencies": {

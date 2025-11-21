@@ -26,6 +26,16 @@ const main = async () => {
         process.exit(1);
     }
 
+    // copy nuxt readme
+    try {
+        await cp('./nuxt/README.md', 'dist/nuxt/README.md')
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+
+    
+
 
 }; 
 

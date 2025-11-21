@@ -14,6 +14,33 @@ export interface GenerateOptions {
     extraProps?: Record<string, any> | null;
 }
 
+const validate = (npmPkg: any) => {
+
+    if (!npmPkg) {
+        throw new Error("No package.json found.");
+    }
+
+    const npmPkgName = npmPkg.name as string;
+    if (!npmPkgName.startsWith("@hlmpn")) {
+        throw new Error("Package name must start with '@hlmpn, wrong scope.");
+    }
+
+    if (!npmPkg.name) {
+        throw new Error("No name found in package.json.");
+    }
+    if (!npmPkg.version) {
+        throw new Error("No version found in package.json.");
+    }
+    if (!npmPkg.exports) {
+        throw new Error("No description found in package.json.");
+    }
+    const npmPkgVersion = npmPkg.version as string;
+    if (!npmPkgVersion.startsWith("v")) {
+        throw new Error("Version must start with 'v'.");
+    }
+
+}
+
 
 const getLatestGitTag = async (): Promise<string> => {
 
@@ -87,8 +114,9 @@ const generate = async (opts?: GenerateOptions) => {
 
 
     } catch (e) {
-        console.error("Error getting latest git tag:", e);
-        process.exit(1);
+        throw new Error(
+            `Error getting latest git tag: ${e instanceof Error ? e.message : String(e)}`,
+        );
     }
 
     let rootpkg: any;
@@ -98,13 +126,13 @@ const generate = async (opts?: GenerateOptions) => {
         if (!rootPkgJsonString) throw new Error("Failed to read root package.json");
         rootpkg = JSON.parse(rootPkgJsonString);
     } catch (e) {
-        console.error("Error reading root package.json:", e);
-        process.exit(1);
+        throw new Error(
+            `Error reading root package.json: ${e instanceof Error ? e.message : String(e)}`,
+        );
     }
 
     if (!rootpkg) {
-        console.error("Root package.json is empty or invalid.");
-        process.exit(1);
+        throw new Error("Root package.json is empty or invalid.");
     }
 
     let npmPkg: any;
@@ -114,12 +142,12 @@ const generate = async (opts?: GenerateOptions) => {
         if (!npmPkgJsonString) throw new Error("Failed to read npm package.json");
         npmPkg = JSON.parse(npmPkgJsonString);
     } catch (e) {
-        console.error("Error reading npm package.json:", e);
-        process.exit(1);
+        throw new Error(
+            `Error reading npm package.json: ${e instanceof Error ? e.message : String(e)}`,
+        );
     }
     if (!npmPkg) {
-        console.error("NPM package.json is empty or invalid.");
-        process.exit(1);
+        throw new Error("NPM package.json is empty or invalid.");
     }
 
     if (npmPkg?.dependencies) {
@@ -156,8 +184,9 @@ const generate = async (opts?: GenerateOptions) => {
             Object.assign(npmPkg, opts.extraProps);
         }
     } catch (e) {
-        console.error("Error updating npm package.json:", e);
-        process.exit(1);
+        throw new Error(
+            `Error updating npm package.json: ${e instanceof Error ? e.message : String(e)}`,
+        );
     }
 
     try {
@@ -165,10 +194,19 @@ const generate = async (opts?: GenerateOptions) => {
     } catch { }
 
     try {
+        validate(npmPkg);
+    } catch (e) {
+        throw new Error(
+            `Error validating npm package.json: ${e instanceof Error ? e.message : String(e)}`,
+        );
+    }
+
+    try {
         await Bun.write("dist/package.json", JSON.stringify(npmPkg, null, 2));
     } catch (e) {
-        console.error("Error writing npm package.json:", e);
-        process.exit(1);
+        throw new Error(
+            `Error writing npm package.json: ${e instanceof Error ? e.message : String(e)}`,
+        );
     }
 
     console.log("Package.json generated successfully.");
