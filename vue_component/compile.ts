@@ -7,21 +7,26 @@ let input: string;
 let parsed: sfc.SFCParseResult;
 
 
+
+
+
 export interface CompileOptions {
     inputFilePath: string;
     outputFilePath: string;
 }
 
-const vueComponentDir = () => import.meta.dir;
+const vueComponentDir = `${import.meta.dir}`;
+const distDir = path.join(vueComponentDir, 'dist');
 
 
-const compileComponent = async (opts: CompileOptions = { inputFilePath: './Icon.vue', outputFilePath: './dist/icon.ts' }) => {
 
-    
+
+const compileComponent = async (opts: CompileOptions = { inputFilePath: path.join(vueComponentDir, 'icon.vue'), outputFilePath: path.join(distDir, 'icon.ts') }) => {
+
     
 
     try {
-        await rm('./dist', { recursive: true, force: true });
+        await rm(distDir, { recursive: true, force: true });
     } catch { }
 
 
@@ -84,10 +89,12 @@ const compileComponent = async (opts: CompileOptions = { inputFilePath: './Icon.
 
     const script = compileScript(descriptor, scriptOpts);
 
-    console.log('-----------------------');
-    console.log("Compiled script content:\n", script.content);
-    console.log('-----------------------');
+    if (process.argv.includes('-v')) {
 
+        console.log('-----------------------');
+        console.log("Compiled script content:\n", script.content);
+        console.log('-----------------------');
+    };
 
     const templateOpts: sfc.SFCTemplateCompileOptions = {
         ssr: true,
@@ -118,36 +125,34 @@ const compileComponent = async (opts: CompileOptions = { inputFilePath: './Icon.
     const style = descriptor.styles.map((s) => compileStyle({ source: s.content, filename: descriptor.filename || 'component', id: 'component' }));
     const cssVars = descriptor.cssVars;
     
-    console.log('-----------------------');
-    console.log("Compiled script:\n", script.content);
-    console.log('-----------------------');
-    console.log("Compiled SSR template:\n", ssrRender.code);
-    console.log('-----------------------');
-    console.log("Compiled CSR template:\n", render.code);
-    console.log('-----------------------');
-    console.log("Compiled styles:\n", style.map((s) => s.code));
-    console.log('-----------------------');
-    console.log("CSS Vars:", cssVars);
-    console.log('-----------------------');
+    if (process.argv.includes('-v')) {
+        console.log('-----------------------');
+        console.log("Compiled script:\n", script.content);
+        console.log('-----------------------');
+        console.log("Compiled SSR template:\n", ssrRender.code);
+        console.log('-----------------------');
+        console.log("Compiled CSR template:\n", render.code);
+        console.log('-----------------------');
+        console.log("Compiled styles:\n", style.map((s) => s.code));
+        console.log('-----------------------');
+        console.log("CSS Vars:", cssVars);
+        console.log('-----------------------');
 
-
-
-
-
+    };
     
 
     const component = `
-${render.preamble}
-    ${script.content}
+${render.preamble }
+    ${script.content }
 
-    component.render = ${render.code};
-    component.ssrRender = ${ssrRender.code};
+component.render = ${render.code };
+component.ssrRender = ${ssrRender.code };
 
-    component.name = ${JSON.stringify(componentName)};
+component.name = ${JSON.stringify(componentName) };
 
-    export default component;
+export default component;
 
-    `;
+`;
 
 
 
@@ -176,12 +181,12 @@ ${render.preamble}
 
 const main = async () => {
     const res = await compileComponent({
-        inputFilePath: "./Icon.vue",
-        outputFilePath: "./dist/icon.ts",
+        inputFilePath: path.join(vueComponentDir, 'icon.vue'),
+        outputFilePath: path.join(distDir, 'icon.ts')
     });
 
     try {
-        await Bun.write("./dist/icon.ts", res || "");
+        await Bun.write(path.join(distDir), res || "");
         console.log("Component compiled successfully to ./dist/icon.ts");
     } catch (e) {
         console.error("Error writing output file:", e);

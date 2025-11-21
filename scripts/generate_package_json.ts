@@ -1,11 +1,26 @@
+#!/usr/bin/env bun
+
+/**
+ * @license
+ * Copyright 2025 HLMPN AB
+ * SPDX-License-Identifier: MIT
+ */
+
+import { rm } from "node:fs/promises";
+
 
 export interface GenerateOptions {
     version: string;
-    extraProps?: Record<string, any>;
+    extraProps?: Record<string, any> | null;
 }
 
 
 const getLatestGitTag = async (): Promise<string> => {
+
+    if (process.env.GIT_TAG) {
+        return process.env.GIT_TAG.trim();
+    }
+
     const gitProc = Bun.spawn(["git", "describe", "--tags", "--abbrev=0"], {
         stdout: "pipe",
         stderr: "pipe",
@@ -34,7 +49,47 @@ const getLatestGitTag = async (): Promise<string> => {
 
 
 
-const generate = async (opts: GenerateOptions) => {
+const generate = async (opts?: GenerateOptions) => {
+
+    let version: string;
+    try {
+        const gitTag = await getLatestGitTag();
+        if (!gitTag && !opts?.version) {
+            throw new Error("No git tag found and no version provided.");
+        }
+        switch (true) {
+            // 1. Local version is older than git tag
+            case opts?.version && gitTag && Bun.semver.order(opts.version.replace(/^v/, ''), gitTag.replace(/^v/, '')) === -1:
+                throw new Error(`Version mismatch: ${opts.version} is older than tag ${gitTag}`);
+
+            // 2. No version source found
+            case !opts?.version && !gitTag:
+                throw new Error("No version provided in options or git tags");
+
+            // 3. Only options version exists
+            case !!opts?.version && !gitTag:
+                version = opts.version;
+                console.log(`version: ${version} (from options)`);
+                break;
+
+            // 4. Only git tag exists
+            case !opts?.version && !!gitTag:
+                version = gitTag;
+                console.log(`version: ${version} (from git tag)`);
+                break;
+
+            // 5. Both exist (Local >= Tag)
+            default:
+                version = opts!.version!;
+                console.log(`version: ${version} (from options)`);
+                break;
+        }
+
+
+    } catch (e) {
+        console.error("Error getting latest git tag:", e);
+        process.exit(1);
+    }
 
     let rootpkg: any;
 
@@ -67,17 +122,56 @@ const generate = async (opts: GenerateOptions) => {
         process.exit(1);
     }
 
+    if (npmPkg?.dependencies) {
+        delete npmPkg.dependencies;
+    }
+    if (npmPkg?.optionalDependencies) {
+        delete npmPkg.optionalDependencies;
+    }
+    if (npmPkg?.peerDependencies) {
+        delete npmPkg.peerDependencies;
+    }
+    if (npmPkg?.devDependencies) {
+        delete npmPkg.devDependencies;
+    }
+    
+
     if (rootpkg.dependencies) {
         npmPkg.dependencies = rootpkg.dependencies;
     }   
-    if (rootpkg.devDependencies) {
-        npmPkg.devDependencies = rootpkg.devDependencies;
-    }   
+    if (rootpkg.optionalDependencies) {
+        npmPkg.optionalDependencies = rootpkg.optionalDependencies;
+    }
+   
     if (rootpkg.peerDependencies) {
         npmPkg.peerDependencies = rootpkg.peerDependencies;
     }
 
 
+    npmPkg.version = version;
+
+    try {
+
+        if (opts && opts?.extraProps) {
+            Object.assign(npmPkg, opts.extraProps);
+        }
+    } catch (e) {
+        console.error("Error updating npm package.json:", e);
+        process.exit(1);
+    }
+
+    try {
+        await rm("dist/package.json", { force: true });
+    } catch { }
+
+    try {
+        await Bun.write("dist/package.json", JSON.stringify(npmPkg, null, 2));
+    } catch (e) {
+        console.error("Error writing npm package.json:", e);
+        process.exit(1);
+    }
+
+    console.log("Package.json generated successfully.");
 
 
 
@@ -89,11 +183,16 @@ const generate = async (opts: GenerateOptions) => {
 
 const main = async () => {
     const latestTag = await getLatestGitTag();
-    console.log("Latest git tag:", latestTag);
+    await generate({ version: latestTag });
 };
 
 if (import.meta.main) {
     main();
+}
+
+export {
+    main,
+    getLatestGitTag
 }
 
 export default generate;

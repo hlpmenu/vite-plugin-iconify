@@ -1,7 +1,21 @@
+#!/usr/bin/env bun
+
+/**
+ * @license
+ * Copyright 2025 HLMPN AB
+ * SPDX-License-Identifier: MIT
+ */
+
 import { rm, cp } from "node:fs/promises";
 import * as rollup from "rollup";
 import dts from "rollup-plugin-dts";
-import compileComponent from "../vue_component/compile.ts";
+import compileComponent from "../vue_component/compile";
+import copyAssets from "./copy_assets";
+
+const isProduction = () => process.env.PRODUCTION ? true : false
+
+
+
 
 const build = async () => {
 	const entrypoints = ["src/index.ts"];
@@ -22,7 +36,7 @@ const build = async () => {
 			outdir,
 			minify: true,
 			tsconfig: "./tsconfig.json",
-			sourcemap: process.env.PRODUCTION ? false : true,
+			sourcemap: isProduction() ? false : true,
 			target: "node",
 			format: "esm",
 			packages: "bundle",
@@ -122,6 +136,16 @@ const build = async () => {
 		console.error(e);
 		process.exit(1);
 	}
+
+	try {
+		copyAssets()
+	} catch (e) {
+		await rm("dist", { recursive: true, force: true });
+		console.error(e);
+		process.exit(1);
+	}
+	
+
 };
 
 build();

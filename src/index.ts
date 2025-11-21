@@ -8,13 +8,14 @@ import type { IconBindingResult } from "./types";
 
 const pluginName = "[vite-plugin-iconify] ";
 
+// biome-ignore lint/suspicious/noExplicitAny: Vite's Plugin typing expects Plugin<any>.
 const IconifySfcPlugin = (): Plugin<any> => {
 	return {
 		name: "vite-plugin-iconify",
 		//apply: "build",
 		enforce: "pre",
 
-		async transform(code: string, id: string): Promise<string | void> {
+		async transform(code: string, id: string): Promise<string | undefined> {
 			const filter = createFilter(["**/*.vue"]);
 			const reactFilter = createFilter(["**/*.jsx", "**/*.tsx"]);
 
@@ -79,14 +80,14 @@ const IconifySfcPlugin = (): Plugin<any> => {
 					.join(" ");
 
 				const addAttrsToSvg = (svgContent: string, extra?: string) => {
-					let svg = svgContent;
+					const svg = svgContent;
 					const attrsParts = [
 						filteredAttributes.trim().length > 0 ? filteredAttributes : null,
 						extra && extra.trim().length > 0 ? extra : null,
 					].filter(Boolean);
 
 					if (attrsParts.length === 0) return svg;
-					const attrsString = " " + attrsParts.join(" ");
+					const attrsString = ` ${attrsParts.join(" ")}`;
 					return svg.replace("<svg", `<svg${attrsString}`);
 				};
 

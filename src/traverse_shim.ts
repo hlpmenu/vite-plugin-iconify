@@ -8,8 +8,8 @@ const getTraverse = () => {
 			typeof _traverse !== "function" &&
 			// @ts-expect-error: runtime interop
 			_traverse?.default && // @ts-ignore
-			typeof _traverse?.default !== "undefined" // @ts-ignore 
-			&& typeof _traverse?.default === "function"
+			typeof _traverse?.default !== "undefined" && // @ts-ignore
+			typeof _traverse?.default === "function"
 		) {
 			// @ts-expect-error: runtime interop
 			return _traverse.default;
@@ -24,6 +24,7 @@ const getTraverse = () => {
 	return undefined;
 };
 
+// oxlint-disable-next-line eslint/no-unused-vars
 const isBun = () => {
 	try {
 		// @ts-expect-error: runtime interop

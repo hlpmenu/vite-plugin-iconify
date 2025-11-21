@@ -32,7 +32,6 @@ const parseIconBinding = (
 	const literalMatch = expr.match(/^(['"`])((?:(?!\$\{)[^'"`])+)\1$/);
 
 	if (literalMatch) {
-		
 		return { type: "single", icon: literalMatch[2] };
 	}
 
@@ -40,7 +39,7 @@ const parseIconBinding = (
 	const ternaryMatch = expr.match(/^(.*?)\?(.*)$/);
 	if (ternaryMatch) {
 		const condition = ternaryMatch[1].trim();
-		let rest = stripOuterParens(ternaryMatch[2]);
+		const rest = stripOuterParens(ternaryMatch[2]);
 
 		const branchesMatch = rest.match(
 			/^\s*(['"`])([^'"`]+)\1\s*:\s*(['"`])([^'"`]+)\3\s*$/,

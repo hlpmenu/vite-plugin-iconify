@@ -9,7 +9,8 @@
 	"sideEffects": false,
 	"exports": {
 		".": "./index.js",
-		"/nuxt": "./nuxt/module.js"
+		"./nuxt": "./nuxt/module.js",
+		"./vue": "./vue/component.js"
 	},
 
 	"dependencies": {

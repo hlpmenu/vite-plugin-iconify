@@ -10,7 +10,6 @@ import * as t from "@babel/types";
 import { readFile } from "node:fs/promises";
 import type { EvalVal, ImportBinding, LocalEnv, ModuleEnv } from "./types";
 
-
 const BABEL_PLUGINS: any[] = [
 	"typescript",
 	"jsx",
@@ -367,8 +366,10 @@ const createStaticResolver = async (
 
 					if (obj.kind === "string" && t.isIdentifier(prop)) {
 						if (prop.name === "trim") return STR(obj.value.trim());
-						if (prop.name === "toLowerCase") return STR(obj.value.toLowerCase());
-						if (prop.name === "toUpperCase") return STR(obj.value.toUpperCase());
+						if (prop.name === "toLowerCase")
+							return STR(obj.value.toLowerCase());
+						if (prop.name === "toUpperCase")
+							return STR(obj.value.toUpperCase());
 						if (prop.name === "split") {
 							const sepArg = n.arguments[0];
 							if (sepArg && t.isStringLiteral(sepArg)) {
@@ -403,6 +404,7 @@ const createStaticResolver = async (
 		return evalNode(node);
 	};
 
+	// oxlint-disable-next-line eslint/no-unused-vars
 	const evalIdentifier = async (name: string): Promise<EvalVal> => {
 		if (idValueCache.has(name)) return idValueCache.get(name)!;
 
